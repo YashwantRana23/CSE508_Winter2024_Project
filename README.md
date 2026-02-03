@@ -56,22 +56,94 @@ Legal Lens Group No. 44 aims to revolutionize natural language processing tasks 
    - Indian Penal Code PDFs, Crime PDFs, A1860-45 PDF, 33 Law of Crime, and other legal documents.
    - Government sources such as National Judicial Data Grid (NJDG) & IndianKanoon are utilized for dataset collection and validation.
    
-## Installation:
+## Refactored Full-Stack Application (Recommended)
+
+Legal Lens has been refactored into a **single production-ready web application** with a FastAPI backend and Next.js frontend. All original functionality is preserved.
+
+### Architecture
+
+- **Backend (FastAPI)**: REST APIs for auth, BM25 search, knowledge graph generation, cosine rerank, domain-specific chatbot, and feedback. ML logic (BM25, TF-IDF cosine similarity, network graph, LangChain chatbots) lives in backend services.
+- **Frontend (Next.js)**: Single responsive SPA with login/register, dashboard, search bar with live BM25 results, interactive knowledge graph (vis.js), ChatGPT-style chatbot with domain selection, and feedback form.
+- **Flow**: User logs in → Dashboard → Search (BM25 top 10) → Process → Knowledge graph + top 3 reranked results → Chatbot (murder/child/maternity/IPC) → Feedback.
+
+### Setup (one command per service)
+
+**1. Backend**
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+# Optional: copy .env.example to .env and set DATA_PATH, OPENAI_API_KEY, etc.
+python run.py
+```
+
+Backend runs at **http://localhost:8000**. API docs: http://localhost:8000/docs
+
+**2. Frontend**
+
+```bash
+cd frontend
+npm install
+# Optional: copy .env.local.example to .env.local and set NEXT_PUBLIC_API_URL
+npm run dev
+```
+
+Frontend runs at **http://localhost:3000**.
+
+### Environment Variables
+
+- **Backend** (`backend/.env`): `DATA_PATH` (CSV for BM25 corpus), `SECRET_KEY`, `OPENAI_API_KEY`, `CHATBOT_*_PDF` paths. See `backend/.env.example`.
+- **Frontend** (`frontend/.env.local`): `NEXT_PUBLIC_API_URL` (default `http://localhost:8000`). See `frontend/.env.local.example`.
+
+### API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `POST /auth/register` | User registration |
+| `POST /auth/login` | Login (returns JWT) |
+| `POST /search/bm25` | BM25 search (top 10) |
+| `POST /knowledge-graph/generate` | Generate KG from documents; returns nodes, edges, top 3 |
+| `POST /rerank/cosine` | Rerank by cosine similarity (top 3) |
+| `POST /chatbot/{domain}` | Chat (domain: murder, child, maternity, ipc) |
+| `POST /feedback/submit` | Submit feedback |
+
+### Project Structure (Refactored)
+
+```
+backend/
+  app/
+    main.py           # FastAPI app
+    config.py         # Env-based config
+    database.py       # SQLAlchemy
+    models/           # User, Feedback
+    routers/          # auth, search, knowledge_graph, rerank, chatbot, feedback
+    services/         # auth, bm25, knowledge_graph, chatbot
+    schemas/
+frontend/
+  src/
+    app/              # Next.js App Router (login, register, dashboard)
+    components/       # KnowledgeGraphViz, ChatbotUI
+    lib/api.ts        # API client
+```
+
+---
+
+## Legacy Installation (Streamlit / Flask)
+
 1. Clone the repository:
-```git clone https://github.com/sarthak23-25/CSE508_Winter2024_Project.git```
-```cd LegalLawWebsite/legal```
+```bash
+git clone https://github.com/sarthak23-25/CSE508_Winter2024_Project.git
+cd CSE508_Winter2024_Project
+```
 
-2. Install dependencies:
-```pip install -r requirements.txt```
+2. For the refactored app, use the **Refactored Full-Stack Application** setup above.
 
-3. Start the Streamlit app:
-```streamlit run 3DKnowledge.py```
-
-4. Start the Streamlit app:
-```streamlit run chatbot.py```
-
-6. Start the  app server:
-```run server manage.py```
+3. For the original Streamlit/Flask setup:
+   - Flask auth: `cd Flask && pip install -r requirements.txt && python app.py`
+   - Streamlit knowledge graph: `streamlit run "LegalLaw/KnowledgeGraph/3D knowledge Graph.py"`
+   - Streamlit chatbot: run the relevant chatbot script in `LegalLaw/Chatbot/`
 
 
 ## References:
