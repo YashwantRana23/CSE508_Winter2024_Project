@@ -1,155 +1,156 @@
-# Legal Lens Group No. 44
+# Legal Lens
 
-## Team Members:
-1. Harsh Patel (MT23056)
-2. Sahil More (MT23079)
-3. Sarthak Pol (MT23082)
-4. Vinayak Katoch (MT23105)
-5. Yashwant Rana (MT23107)
+A collaborative legal information retrieval prototype combining BM25 search, TF-IDF document-similarity analysis and a separate PDF-based RAG chatbot, with a FastAPI backend and Next.js interface.
 
-## Project Overview:
-Legal Lens Group No. 44 aims to revolutionize natural language processing tasks in the legal domain by providing accurate and contextually relevant responses to legal queries. By integrating external knowledge bases and employing advanced NLP techniques, Legal Lens facilitates the digital transformation of legal processes, enhances access to legal information, and assists legal professionals and individuals in navigating complex legal scenarios efficiently.
+## Why this project exists
 
-## Workflow:
+Legal documents are difficult to search and compare. Legal Lens explores two ways to make them easier to navigate: lexical retrieval with a document-similarity view, and conversational retrieval over a configured legal PDF.
 
-1. *User Registration:*
-   - Users register with Legal Lens using their email and create a password for their account.
+The repository contains the original CSE508 group project and a newer full-stack application. It is a prototype with remaining evaluation, dependency and session-isolation work; no production-readiness or answer-accuracy claim is made.
 
-2. *Login:*
-   - After registration, users can log in to their account using their credentials.
+## Architecture
 
-3. *Main Page:*
-   - Upon login, users are redirected to the main page of Legal Lens.
-
-4. *BM25 Working Model:*
-   - Users can input their legal query into the search bar.
-   - The BM25 algorithm retrieves the top 10 relevant results related to the user's query.
-   - Upon selecting "Process," the system generates a knowledge graph representation of the top 10 queries.
-
-5. *Knowledge Graph Analysis:*
-   - Cosine similarity is calculated among all pairs of the top 10 results.
-   - Based on cosine similarity scores, a new ranking is generated, and the top 3 most relevant results are displayed to the user.
-
-6. *Chatbot Interaction:*
-   - Users can interact with specialized chatbots in different legal domains such as murder law, child law, maternity law, etc.
-   - Each chatbot is trained on specific datasets related to its legal domain, providing accurate and tailored responses.
-   - Users can select a specific chatbot based on their legal query and interact with it to receive guidance and information.
-
-7. *Feedback Mechanism:*
-   - Users have the option to provide feedback through a dedicated form if they are dissatisfied with the provided information or have suggestions for improvement.
-   - The feedback loop helps in continuously refining and improving the system based on user input.
-
-## Functionalities:
-
-1. *Knowledge Graph:*
-   - Represents legal concepts, entities, relationships, and rules in a structured format.
-   - Organizes legal information into a graph-based system for enhanced understanding and relationships.
-
-2. *BM25 Algorithm:*
-   - Retrieves top 10 relevant results based on user queries, enhancing search accuracy in legal documents.
-
-3. *Chatbot System:*
-   - Utilizes specialized chatbots trained in different legal domains to provide tailored advice and information to users.
-   - Enhances user experience by allowing natural language interactions for legal queries.
-
-4. *Datasets Used:*
-   - Indian Penal Code PDFs, Crime PDFs, A1860-45 PDF, 33 Law of Crime, and other legal documents.
-   - Government sources such as National Judicial Data Grid (NJDG) & IndianKanoon are utilized for dataset collection and validation.
-   
-## Refactored Full-Stack Application (Recommended)
-
-Legal Lens has been refactored into a **single production-ready web application** with a FastAPI backend and Next.js frontend. All original functionality is preserved.
-
-### Architecture
-
-- **Backend (FastAPI)**: REST APIs for auth, BM25 search, knowledge graph generation, cosine rerank, domain-specific chatbot, and feedback. ML logic (BM25, TF-IDF cosine similarity, network graph, LangChain chatbots) lives in backend services.
-- **Frontend (Next.js)**: Single responsive SPA with login/register, dashboard, search bar with live BM25 results, interactive knowledge graph (vis.js), ChatGPT-style chatbot with domain selection, and feedback form.
-- **Flow**: User logs in → Dashboard → Search (BM25 top 10) → Process → Knowledge graph + top 3 reranked results → Chatbot (murder/child/maternity/IPC) → Feedback.
-
-### Setup (one command per service)
-
-**1. Backend**
-
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-# Optional: copy .env.example to .env and set DATA_PATH, OPENAI_API_KEY, etc.
-python run.py
+```mermaid
+flowchart TB
+    UI[Next.js interface] --> API[FastAPI routers]
+    API --> AUTH[Registration and login]
+    AUTH --> DB[SQLAlchemy / SQLite]
+    API --> FEEDBACK[Feedback persistence]
+    FEEDBACK --> DB
+    API --> BM25[BM25 corpus search]
+    CSV[Configured CSV or demo corpus] --> BM25
+    BM25 --> RESULTS[Ranked documents]
+    RESULTS --> TFIDF[TF-IDF pairwise cosine similarity]
+    TFIDF --> GRAPH[Document graph and top-three similarity ranking]
+    API --> CHAT[Domain chatbot]
+    PDF[Configured PDF] --> CHUNKS[Text extraction and chunking]
+    CHUNKS --> VECTOR[Hugging Face embeddings / FAISS]
+    VECTOR --> CHAT
+    CHAT --> LLM[LangChain retrieval chain / OpenAI model]
 ```
 
-Backend runs at **http://localhost:8000**. API docs: http://localhost:8000/docs
+The search/graph workflow and the chatbot use separate data paths. BM25 results are not currently passed into the chatbot as context.
 
-**2. Frontend**
+## Engineering highlights
+
+- Separates HTTP routes, request/response schemas, persistence and retrieval services.
+- Lazily builds and caches a BM25 index over a configured corpus.
+- Returns document text, names, scores and ranks through a search API.
+- Exposes a TF-IDF similarity graph and a top-three document-similarity ranking.
+- Implements PDF text extraction, chunking, dense retrieval and LLM generation for a domain-selected chatbot.
+- Includes bcrypt password hashing, JWT login, database-backed user/feedback records and a React interface.
+
+## Tech stack
+
+| Area | Technologies |
+| --- | --- |
+| Backend | Python, FastAPI, Pydantic, SQLAlchemy, SQLite |
+| Authentication | bcrypt, JWT |
+| Retrieval and ranking | rank-bm25, pandas, NumPy, scikit-learn, NetworkX |
+| RAG | PyPDF2, LangChain, Hugging Face embeddings, FAISS, OpenAI model API |
+| Frontend | Next.js, React, TypeScript, Tailwind CSS, vis-network |
+| Earlier experiments | Jupyter, Flask, Streamlit, local Llama/FAISS experiments |
+
+## How it works
+
+### Retrieval and ranking
+
+1. Read a CSV containing `text` and `name` columns, or use the built-in three-document demonstration corpus.
+2. Preprocess corpus/query text and retrieve positive-scoring BM25 results, with a default limit of 10.
+3. Send selected results to the graph service, which represents each document using at most its first 50 words.
+4. Compute TF-IDF vectors and pairwise cosine similarities, then visualize weighted document connections.
+5. Return three documents ordered by their average similarity to the other documents, including self-similarity.
+
+This second ranking measures similarity within the retrieved set. It is not a query-aware relevance reranker, and the graph does not perform legal entity/relation extraction.
+
+### RAG chatbot
+
+1. Select a domain and resolve its configured PDF; absent domain files can fall back to the bundled Indian Penal Code PDF.
+2. Extract PDF text and split it with configured chunk size 900 and overlap 100 characters.
+3. Create Hugging Face embeddings and an in-memory FAISS index.
+4. Use a LangChain conversational retrieval chain to retrieve context and call the OpenAI chat model selected in code.
+
+The current service uses `gpt-3.5-turbo` and a chain cache per domain. It does not fine-tune a model, isolate conversation memory per user, or return structured source citations.
+
+## Setup
+
+```bash
+git clone https://github.com/YashwantRana23/CSE508_Winter2024_Project.git
+cd CSE508_Winter2024_Project/backend
+python -m venv .venv
+```
+
+Activate with `source .venv/bin/activate` on Linux/macOS or `.venv\Scripts\Activate.ps1` in Windows PowerShell. Set a fresh `SECRET_KEY` in the process environment before startup (configuration details below), then run locally:
+
+```bash
+python -m pip install -r requirements.txt
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+The backend listens on port 8000; API documentation is at `http://localhost:8000/docs`. In another terminal, from the repository root:
 
 ```bash
 cd frontend
-npm install
-# Optional: copy .env.local.example to .env.local and set NEXT_PUBLIC_API_URL
+npm ci
 npm run dev
 ```
 
-Frontend runs at **http://localhost:3000**.
+Open `http://localhost:3000`.
 
-### Environment Variables
+Configuration:
 
-- **Backend** (`backend/.env`): `DATA_PATH` (CSV for BM25 corpus), `SECRET_KEY`, `OPENAI_API_KEY`, `CHATBOT_*_PDF` paths. See `backend/.env.example`.
-- **Frontend** (`frontend/.env.local`): `NEXT_PUBLIC_API_URL` (default `http://localhost:8000`). See `frontend/.env.local.example`.
+| Setting | Purpose |
+| --- | --- |
+| `DATA_PATH` | Optional BM25 CSV; relative paths resolve from the project root. |
+| `SECRET_KEY` | JWT signing secret; set it in the process environment before startup. |
+| `OPENAI_API_KEY` | Enables the external LLM call for the optional chatbot. |
+| `CHATBOT_IPC_PDF`, `CHATBOT_MURDER_PDF`, `CHATBOT_CHILD_PDF`, `CHATBOT_MATERNITY_PDF` | Optional chatbot document paths. |
+| `DATABASE_URL` | Optional database URL; SQLite is the default. |
+| `NEXT_PUBLIC_API_URL` | Frontend API URL; defaults to `http://localhost:8000`. |
 
-### API Endpoints
+The backend reads an optional `backend/.env`; the frontend uses `frontend/.env.local`. Example environment files are not currently included. Early backend settings are read before dotenv initialization, so supply the signing secret/database settings as process environment variables.
 
-| Endpoint | Description |
-|----------|-------------|
-| `POST /auth/register` | User registration |
-| `POST /auth/login` | Login (returns JWT) |
-| `POST /search/bm25` | BM25 search (top 10) |
-| `POST /knowledge-graph/generate` | Generate KG from documents; returns nodes, edges, top 3 |
-| `POST /rerank/cosine` | Rerank by cosine similarity (top 3) |
-| `POST /chatbot/{domain}` | Chat (domain: murder, child, maternity, ipc) |
-| `POST /feedback/submit` | Submit feedback |
+**Reproduction gaps:** requirements use broad version ranges and the chatbot relies on older LangChain import paths. FAISS is imported by the chatbot but its runtime package is missing from `backend/requirements.txt`; a compatible installation such as `faiss-cpu` is needed. Validate/pin a compatible environment before treating the full chatbot setup as reproducible. Search and graph exploration do not require an LLM API key.
 
-### Project Structure (Refactored)
+## Example query flow
 
-```
-backend/
-  app/
-    main.py           # FastAPI app
-    config.py         # Env-based config
-    database.py       # SQLAlchemy
-    models/           # User, Feedback
-    routers/          # auth, search, knowledge_graph, rerank, chatbot, feedback
-    services/         # auth, bm25, knowledge_graph, chatbot
-    schemas/
-frontend/
-  src/
-    app/              # Next.js App Router (login, register, dashboard)
-    components/       # KnowledgeGraphViz, ChatbotUI
-    lib/api.ts        # API client
+Submit `maternity benefit` to `POST /search/bm25`:
+
+```json
+{"query": "maternity benefit", "top_k": 10}
 ```
 
----
+The API returns a `results` list with `text`, `name`, `score` and `rank`. The demonstration corpus includes `maternity.txt`. The dashboard's **Process** action submits retrieved documents to `/knowledge-graph/generate` to obtain graph nodes, weighted edges and the top-three similarity ranking.
 
-## Legacy Installation (Streamlit / Flask)
+A chatbot request goes separately to `/chatbot/{domain}` with a message; it retrieves from that domain's PDF rather than the search results.
 
-1. Clone the repository:
-```bash
-git clone https://github.com/sarthak23-25/CSE508_Winter2024_Project.git
-cd CSE508_Winter2024_Project
-```
+## Engineering challenges
 
-2. For the refactored app, use the **Refactored Full-Stack Application** setup above.
+- **Ranking quality:** average inter-document similarity favors central documents; a labeled query set is needed to compare this heuristic with query-aware rerankers.
+- **Session isolation:** cached domain chains currently share conversation memory across callers, and the supplied history argument is not applied. Per-user/session state is needed before multi-user chatbot use.
+- **Data coverage:** fallback documents keep the prototype explorable but do not establish domain coverage or current legal completeness.
+- **Reproducibility:** dependency compatibility, missing FAISS packaging and environment initialization need tightening. Automated end-to-end evaluation and deployment validation are not included.
 
-3. For the original Streamlit/Flask setup:
-   - Flask auth: `cd Flask && pip install -r requirements.txt && python app.py`
-   - Streamlit knowledge graph: `streamlit run "LegalLaw/KnowledgeGraph/3D knowledge Graph.py"`
-   - Streamlit chatbot: run the relevant chatbot script in `LegalLaw/Chatbot/`
+## Future improvements
 
+- Add dependency locks, complete environment examples and smoke tests for each workflow.
+- Isolate chatbot sessions and return retrieved passages with source/page references.
+- Evaluate BM25, query-aware reranking and dense/hybrid retrieval on labeled queries.
+- Make the LLM model/provider configurable and report grounded-answer evaluation separately from retrieval metrics.
+- Add corpus provenance/versioning and confirm redistribution terms for sample documents.
+- Apply consistent API access controls and document deployment configuration.
 
-## References:
-1. [Corpus for Automatic Structuring of Legal Documents](https://arxiv.org/abs/2201.13125) - P. Kalamkar et al.
-2. [Dependency Learning for Legal Judgment Prediction](https://arxiv.org/abs/2112.06370) - Y. Huang et al.
-3. [Named Entity Recognition in Indian court judgments](https://arxiv.org/abs/2211.03442) - P. Kalamkar et al.
-4. [SemEval 2023 Task 6: LegalEval - Understanding Legal Texts](https://arxiv.org/abs/2304.09548) - A. Modi et al.
+## Contributors and project history
 
-![Untitled design](https://github.com/sarthak23-25/CSE508_Winter2024_Project/assets/144327529/575c41ee-097c-44af-a3f6-19b2478d41e8)
+Developed as **CSE508 Winter 2024, Group 44**, with contributions from:
+
+- Harsh Patel — MT23056
+- Sahil More — MT23079
+- Sarthak Pol — MT23082
+- Vinayak Katoch — MT23105
+- Yashwant Rana — MT23107
+
+The original notebooks, Flask/Streamlit components and Llama experiments remain in the repository. The `backend/` and `frontend/` directories contain the later FastAPI/Next.js application; [the refactor commit](https://github.com/YashwantRana23/CSE508_Winter2024_Project/commit/d681f4b01e1ca9872389c9a47ae59097a888d7a0) is attributed to `yashwant938`. This is collaborative work, not a sole-authorship claim.
+
+Original project references: [legal-document structuring corpus](https://arxiv.org/abs/2201.13125), [legal judgment prediction](https://arxiv.org/abs/2112.06370), [Indian court judgment NER](https://arxiv.org/abs/2211.03442), and [LegalEval](https://arxiv.org/abs/2304.09548).
+
