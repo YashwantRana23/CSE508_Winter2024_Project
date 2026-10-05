@@ -59,8 +59,13 @@ def _metadata(path: str, modified_ns: int, size: int) -> tuple[int, str]:
     with Path(path).open("rb") as stream:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(block)
-    with pymupdf.open(path) as pdf:
-        page_count = len(pdf)
+    try:
+        with pymupdf.open(path) as pdf:
+            if pdf.needs_pass:
+                raise ValueError("Password-protected PDFs must be decrypted before configuration.")
+            page_count = len(pdf)
+    except (pymupdf.FileDataError, pymupdf.EmptyFileError):
+        raise ValueError("The configured PDF is empty or could not be parsed.") from None
     return page_count, digest.hexdigest()
 
 

@@ -168,8 +168,9 @@ def retrieve(query: str, domain: str = "ipc", top_k: int = 6, method: str = "hyb
         failure_key = (corpus.fingerprint, get_settings().EMBEDDING_MODEL)
         with _model_lock:
             failed_until = _dense_failures.get(failure_key, 0)
+        cooling_down = failed_until > monotonic()
         try:
-            if failed_until > monotonic():
+            if cooling_down:
                 raise RuntimeError("Local semantic retrieval is cooling down after a failure.")
             vectors = _vectors(corpus)
             with _model_lock:
@@ -185,8 +186,9 @@ def retrieve(query: str, domain: str = "ipc", top_k: int = 6, method: str = "hyb
             ranked = sorted(combined, key=lambda i: (-combined[i], i))
             used_method = "hybrid"
         except Exception:
-            with _model_lock:
-                _dense_failures[failure_key] = monotonic() + 60
+            if not cooling_down:
+                with _model_lock:
+                    _dense_failures[failure_key] = monotonic() + 60
             warning = "Semantic retrieval is unavailable locally; showing BM25 keyword matches. Install/cache the configured embedding model to enable hybrid retrieval."
             logger.warning("Local semantic retrieval unavailable; serving lexical results.")
     results = []
