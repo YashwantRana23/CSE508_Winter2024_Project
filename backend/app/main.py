@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.database import init_db
-from app.routers import search, knowledge_graph, rerank, chatbot, feedback
+from app.routers import search, knowledge_graph, rerank, chatbot, feedback, sources
 
 
 @asynccontextmanager
@@ -32,8 +32,18 @@ app.include_router(knowledge_graph.router)
 app.include_router(rerank.router)
 app.include_router(chatbot.router)
 app.include_router(feedback.router)
+app.include_router(sources.router)
 
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "corpus_mode": "configured" if get_settings().DATA_PATH else "demo"}
+    settings = get_settings()
+    from app.services import source_service
+    return {
+        "status": "ok",
+        "corpus_mode": "configured" if settings.DATA_PATH else "demo",
+        "research_sources_available": sum(document.path.is_file() for document in source_service.registry()),
+        "provider_configured": bool(settings.OPENAI_API_KEY),
+        "provider_health": "not_checked",
+        "retrieval_readiness": "lazy; BM25 builds on first request, hybrid requires a cached local model",
+    }
