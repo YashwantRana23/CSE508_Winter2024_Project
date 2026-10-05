@@ -18,3 +18,15 @@ def bm25_search(req: BM25Request):
         query=req.query,
         results=[BM25ResultItem(**r) for r in results],
     )
+
+
+from app.schemas.retrieval import RetrievalRequest, RetrievalResponse
+from app.services import retrieval_service
+
+
+@router.post("/retrieve", response_model=RetrievalResponse)
+def retrieve(req: RetrievalRequest):
+    try:
+        return retrieval_service.retrieve(req.query, req.domain, req.top_k, req.method)
+    except (ValueError, OSError):
+        raise HTTPException(503, "The selected source could not be loaded. Check its PDF configuration and extractable text.")
