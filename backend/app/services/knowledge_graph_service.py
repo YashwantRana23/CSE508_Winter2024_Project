@@ -43,15 +43,17 @@ def build_knowledge_graph(
     texts = [_doc_to_short_text(d.get("text", "")) for d in documents]
     names = [str(d.get("name", f"doc_{i}")) for i, d in enumerate(documents)]
 
+    node_ids = [f"doc_{i}" for i in range(len(documents))]
+
     sim_matrix = calculate_similarity_matrix(texts)
     avg_similarities = np.mean(sim_matrix, axis=1)
-    ranked_indices = np.argsort(avg_similarities)[::-1]
+    ranked_indices = np.argsort(-avg_similarities, kind="stable")
 
     G = nx.DiGraph()
     for i, idx in enumerate(ranked_indices):
         name = names[idx]
         G.add_node(
-            name,
+            node_ids[idx],
             label=texts[idx][:200],
             avg_similarity=float(avg_similarities[idx]),
             rank=i + 1,
@@ -60,7 +62,7 @@ def build_knowledge_graph(
     for i in range(len(documents)):
         for j in range(len(documents)):
             if i != j:
-                G.add_edge(names[i], names[j], weight=float(sim_matrix[i][j]))
+                G.add_edge(node_ids[i], node_ids[j], weight=float(sim_matrix[i][j]))
 
     nodes = [
         {

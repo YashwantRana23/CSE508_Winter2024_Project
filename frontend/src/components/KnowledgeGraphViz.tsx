@@ -21,6 +21,7 @@ export function KnowledgeGraphViz({ nodes, edges }: { nodes: Node[]; edges: Edge
   useEffect(() => {
     if (!containerRef.current || nodes.length === 0) return;
 
+    let cancelled = false;
     let network: { destroy: () => void } | null = null;
     const loadVis = async () => {
       const [{ DataSet }, { Network }] = await Promise.all([
@@ -60,11 +61,13 @@ export function KnowledgeGraphViz({ nodes, edges }: { nodes: Node[]; edges: Edge
         height: "400px",
       };
 
+      if (cancelled || !containerRef.current) return;
       network = new Network(containerRef.current, data, options);
     };
 
     loadVis();
     return () => {
+      cancelled = true;
       if (network && "destroy" in network) (network as { destroy: () => void }).destroy();
     };
   }, [nodes, edges]);

@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { bm25Search, generateKnowledgeGraph, chat, submitFeedback } from "@/lib/api";
+import { bm25Search, generateKnowledgeGraph, submitFeedback, api, getErrorMessage } from "@/lib/api";
 import { KnowledgeGraphViz } from "@/components/KnowledgeGraphViz";
 import { ChatbotUI } from "@/components/ChatbotUI";
 import type { BM25ResultItem } from "@/types";
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [corpusMode, setCorpusMode] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
+  useEffect(() => {
+    api.get("/health").then(({ data }) => setCorpusMode(data.corpus_mode)).catch(() => setCorpusMode("offline"));
+  }, []);
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<BM25ResultItem[]>([]);
   const [kgData, setKgData] = useState<{
@@ -23,31 +25,21 @@ export default function DashboardPage() {
   const [searchError, setSearchError] = useState("");
   const [processError, setProcessError] = useState("");
 
-  useEffect(() => {
-    const token = localStorage.getItem("legal_lens_token");
-    const u = localStorage.getItem("legal_lens_user");
-    if (!token || !u) {
-      router.replace("/login");
-      return;
-    }
-    try {
-      setUser(JSON.parse(u));
-    } catch {
-      router.replace("/login");
-    }
-  }, [router]);
-
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim() || searchLoading || processLoading) return;
     setSearchError("");
+    setProcessError("");
+    setHasSearched(false);
+    setSearchResults([]);
     setKgData(null);
     setSearchLoading(true);
     try {
       const res = await bm25Search(query.trim(), 10);
       setSearchResults(res.results || []);
+      setHasSearched(true);
     } catch (err: unknown) {
-      const msg = (err as { message?: string })?.message || "Search failed";
+      const msg = getErrorMessage(err, "Search failed");
       setSearchError(msg);
       setSearchResults([]);
     } finally {
@@ -56,7 +48,7 @@ export default function DashboardPage() {
   }
 
   async function handleProcess() {
-    if (searchResults.length === 0) return;
+    if (searchResults.length === 0 || processLoading || searchLoading) return;
     setProcessError("");
     setProcessLoading(true);
     try {
@@ -68,25 +60,11 @@ export default function DashboardPage() {
         top_3: res.top_3,
       });
     } catch (err: unknown) {
-      const msg = (err as { message?: string })?.message || "Failed to generate graph";
+      const msg = getErrorMessage(err, "Failed to generate graph");
       setProcessError(msg);
     } finally {
       setProcessLoading(false);
     }
-  }
-
-  function handleLogout() {
-    localStorage.removeItem("legal_lens_token");
-    localStorage.removeItem("legal_lens_user");
-    router.replace("/login");
-  }
-
-  if (!user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
-      </div>
-    );
   }
 
   return (
@@ -96,25 +74,24 @@ export default function DashboardPage() {
           <Link href="/dashboard" className="text-xl font-bold text-indigo-600">
             Legal Lens
           </Link>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-600">{user.name}</span>
-            <button
-              onClick={handleLogout}
-              className="rounded-lg bg-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-300"
-            >
-              Logout
-            </button>
-          </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-6xl space-y-8 px-4 py-8">
+        {corpusMode === "demo" && (
+          <p className="rounded-lg bg-indigo-50 p-3 text-sm text-indigo-900">
+            Demo corpus: 3 sample documents. Try “maternity benefit”, “murder”, or “child labour”. Configure DATA_PATH for your own CSV corpus.
+          </p>
+        )}
+        {corpusMode === "offline" && <p role="alert" className="text-red-700">The backend is offline. Start it on port 8000, then refresh this page.</p>}
         {/* Search */}
         <section className="rounded-2xl bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-slate-800">Legal Search (BM25)</h2>
           <form onSubmit={handleSearch} className="flex flex-col gap-4 sm:flex-row">
             <input
               type="text"
+              aria-label="Legal search query"
+              maxLength={2000}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Enter your legal query..."
@@ -122,7 +99,7 @@ export default function DashboardPage() {
             />
             <button
               type="submit"
-              disabled={searchLoading}
+              disabled={searchLoading || processLoading || !query.trim()}
               className="rounded-xl bg-indigo-600 px-6 py-2.5 font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
             >
               {searchLoading ? "Searching…" : "Search"}
@@ -132,13 +109,15 @@ export default function DashboardPage() {
             <p className="mt-2 text-sm text-red-600">{searchError}</p>
           )}
 
+          {hasSearched && !searchLoading && searchResults.length === 0 && <p role="status" className="mt-4 text-slate-600">No matching documents found. Try different keywords.</p>}
+
           {searchResults.length > 0 && (
             <div className="mt-6">
               <div className="mb-2 flex items-center justify-between">
                 <p className="text-sm text-slate-600">Top {searchResults.length} results</p>
                 <button
                   onClick={handleProcess}
-                  disabled={processLoading}
+                  disabled={processLoading || searchLoading}
                   className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900 disabled:opacity-50"
                 >
                   {processLoading ? "Processing…" : "Process → Knowledge Graph"}
@@ -206,16 +185,17 @@ function FeedbackSection() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!message.trim() || loading) return;
     setError("");
     setLoading(true);
     try {
-      await submitFeedback(message, subject || undefined, email || undefined);
+      await submitFeedback(message.trim(), subject || undefined, email || undefined);
       setSent(true);
       setMessage("");
       setSubject("");
       setEmail("");
     } catch (err: unknown) {
-      setError((err as { message?: string })?.message || "Failed to submit feedback");
+      setError(getErrorMessage(err, "Failed to submit feedback"));
     } finally {
       setLoading(false);
     }
@@ -232,6 +212,8 @@ function FeedbackSection() {
           <div>
             <label className="mb-1 block text-sm font-medium text-slate-700">Message *</label>
             <textarea
+              aria-label="Feedback message"
+              maxLength={10000}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
@@ -245,6 +227,8 @@ function FeedbackSection() {
               <label className="mb-1 block text-sm font-medium text-slate-700">Subject</label>
               <input
                 type="text"
+                aria-label="Feedback subject"
+                maxLength={200}
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -255,6 +239,7 @@ function FeedbackSection() {
               <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
               <input
                 type="email"
+                aria-label="Feedback email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -264,7 +249,7 @@ function FeedbackSection() {
           </div>
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !message.trim()}
             className="rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
           >
             {loading ? "Submitting…" : "Submit feedback"}
