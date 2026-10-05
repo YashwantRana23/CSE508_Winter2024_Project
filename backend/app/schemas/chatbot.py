@@ -1,5 +1,6 @@
 from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
+from app.schemas.classification import QuestionClassification
 from app.schemas.retrieval import Domain, RetrievalInfo, RetrievalMethod, Source
 
 
@@ -26,3 +27,4 @@ class ChatResponse(BaseModel):
     sources: list[Source] = Field(default_factory=list)
     retrieval: RetrievalInfo
     request_id: str
+    classification: QuestionClassification

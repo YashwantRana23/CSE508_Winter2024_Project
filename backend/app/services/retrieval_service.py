@@ -103,6 +103,22 @@ def _model():
         return _models[model_name]
 
 
+class EmbeddingInputTooLongError(ValueError):
+    """Raised when a caller requires embeddings without silent truncation."""
+
+
+def encode_texts(texts: list[str], *, reject_truncation: bool = False) -> np.ndarray:
+    """Reuse the cached CPU encoder without downloading or persisting input text."""
+    with _model_lock:
+        model = _model()
+        if reject_truncation:
+            tokens = model.tokenizer(texts, truncation=False, add_special_tokens=True)
+            if any(len(ids) > model.max_seq_length for ids in tokens["input_ids"]):
+                raise EmbeddingInputTooLongError("Text exceeds the local encoder token limit.")
+        return np.asarray(model.encode(texts, batch_size=64, normalize_embeddings=True, show_progress_bar=False), dtype=np.float32)
+
+
+
 def _vectors(corpus: Corpus) -> np.ndarray:
     if corpus.vectors is not None:
         return corpus.vectors

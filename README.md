@@ -9,6 +9,7 @@ A source-backed research workspace for a historical Indian legal corpus. Search 
 - Shared BM25 and optional MiniLM semantic retrieval, combined using reciprocal rank fusion (RRF).
 - PDF page numbers, source excerpts, a registered-source catalogue, and links to the original PDF page.
 - A grounded assistant with explicit generated-answer, document-excerpt, and no-evidence states. Local excerpt mode does not need OpenAI credits.
+- Local question scope/intent classification using cached MiniLM embeddings and two small logistic-regression heads, with an explicit uncertain result.
 - A research workspace with source inspection and a downloadable Markdown research brief.
 - Browser conversation history, source availability, feedback persistence, and the existing document-similarity graph.
 - A Windows launcher, optional Docker Compose packaging, and build-only GitHub checks.
@@ -57,11 +58,19 @@ BM25 retrieval works without downloading an embedding model. To enable hybrid re
 
 Then restart the backend, or wait one minute before retrying hybrid search. Request-time model loading only uses the local cache. If the model is absent or unavailable, the response reports a warning and the actual BM25 retrieval method. Embedding arrays persist under `backend/instance`; changed PDF/model inputs invalidate their cache. No pickle index is loaded.
 
+### Local question classification
+
+The assistant classifies question scope (historical, current, cross-era comparison, or uncertain) and intent (section lookup, explanation, comparison, unrelated, or uncertain). It reuses the cached MiniLM model above and bundled logistic-regression coefficients; no API key, runtime training, or request-time download is required. Question understanding is visible with each assistant response and included in exported briefs. It is a routing estimate, not legal advice or a probability of correctness.
+
+If the encoder is missing, the configured model differs from the trained model, or a score fails the acceptance thresholds, classification becomes unavailable/uncertain and the assistant returns excerpts when evidence exists. Source search remains independent. The assistant does not silently change the chosen corpus. Explicit current-law/applicability checks still run when classification is unavailable; current/cross-era questions cannot be answered from historical or unverified sources. Incidental words such as “today” alone no longer trigger the scope guard.
+
+See [classifier design, training and limitations](docs/CLASSIFICATION.md) and the [authored dataset/model card](backend/app/data/classification/README.md). This is a local task-specific classifier; it is not TypeSafe Jev or a reproduction of its architecture.
+
 ### Optional generated answers
 
 Set `OPENAI_API_KEY` and an available `OPENAI_MODEL` in **backend/.env**, then restart the backend. A key alone does not guarantee API credits or model access. An absent key uses excerpts; provider failures also fall back to excerpts with a visible reason. Quota/authentication failures pause provider calls for five minutes; transient failures pause them for one minute. Requests retry after that cooldown. Updating an environment variable still requires a backend restart.
 
-Questions explicitly asking about current/latest law or BNS/BNSS/BSA are declined when the selected corpus is the historical IPC book. Generated answers are a convenience layer over retrieved passages. Check the citations and source text yourself; validating a citation ID does not prove that a claim is legally correct. Only the last 40 submitted history messages are accepted. Conversation history stays in the current browser page and survives changes to the search method. Switching the corpus or refreshing clears it, as the composer states. The backend stores no shared conversation memory.
+Questions requiring current-law, cross-era or dated-applicability verification are declined when the selected source is historical or unverified. Uncertain scope or intent uses excerpts, even in auto mode. Generated answers are a convenience layer over retrieved passages. Check the citations and source text yourself; validating a citation ID does not prove that a claim is legally correct. Only the last 40 submitted history messages are accepted. Conversation history stays in the current browser page and survives changes to the search method. Switching the corpus or refreshing clears it, as the composer states. The backend stores no shared conversation memory.
 
 ## Configuration
 
@@ -87,18 +96,19 @@ Process environment variables override `backend/.env`. Frontend variables belong
 | `GET /sources` | Registered source catalogue, availability, and historical/unverified labels. |
 | `GET /sources/{document_id}/pdf` | Serve a registered PDF; source links use `?version=SHA256#page=N`. |
 | `POST /search/retrieve` | Shared source retrieval: `query`, `domain`, `top_k` (1–20), `method` (`hybrid` or `bm25`). |
+| `POST /questions/classify` | Local question classification: `question` (1–4,000 characters), independent of retrieval and generation. |
 | `GET /chatbot/status` | Per-domain assistant availability and provider configuration information. |
 | `POST /chatbot/{domain}` | `message`, optional `history`, retrieval `method`, and `answer_mode` (`auto` or `excerpts`). |
 | `POST /feedback/submit` | Validated feedback written to SQLite. |
 
-Shared retrieval returns page-aware sources plus the actual method and elapsed time. Version-pinned PDF links return HTTP 409 if the source has changed, so stale citations cannot silently open a different file. Chat returns `mode` (`generated`, `excerpts`, or `no_evidence`), `reason`, `sources`, retrieval metadata, and a request ID alongside the response text. Full schemas are in `/docs`.
+Shared retrieval returns page-aware sources plus the actual method and elapsed time. Version-pinned PDF links return HTTP 409 if the source has changed, so stale citations cannot silently open a different file. Chat returns `mode` (`generated`, `excerpts`, or `no_evidence`), `reason`, `sources`, retrieval metadata, local `classification`, and a request ID alongside the response text. Full schemas are in `/docs`.
 
 The legacy `/search/bm25`, `/knowledge-graph/generate`, and `/rerank/cosine` routes remain for compatibility. The graph uses TF-IDF similarity over the first 50 words and ranks by average within-set similarity. It is a document-similarity visualization, not a legal entity graph or a query-aware reranker. The legacy CSV search uses a labeled three-document demo when `DATA_PATH` is unset; invalid configured files produce an error.
 
 ## Build checks
 
 ```powershell
-.\backend\.venv\Scripts\python.exe -m compileall -q backend/app backend/run.py backend/prepare_corpus.py
+.\backend\.venv\Scripts\python.exe -m compileall -q backend/app backend/run.py backend/prepare_corpus.py backend/scripts
 .\backend\.venv\Scripts\python.exe -m pip check
 Push-Location frontend
 npm run lint

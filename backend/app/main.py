@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.database import init_db
-from app.routers import search, knowledge_graph, rerank, chatbot, feedback, sources
+from app.routers import search, knowledge_graph, rerank, chatbot, feedback, sources, classification
 
 
 @asynccontextmanager
@@ -33,6 +33,7 @@ app.include_router(rerank.router)
 app.include_router(chatbot.router)
 app.include_router(feedback.router)
 app.include_router(sources.router)
+app.include_router(classification.router)
 
 
 @app.get("/health")

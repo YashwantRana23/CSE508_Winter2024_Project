@@ -9,7 +9,10 @@ flowchart LR
     PDF[Registered PDF] --> Pages[Page text and stable source IDs]
     Pages --> BM25[BM25 lexical ranking]
     Pages --> Dense[Cached MiniLM embeddings]
-    Query[Question and domain] --> BM25
+    Query[Question and domain] --> Classify[Local scope and intent classifier]
+    Classify --> Policy[Source-scope policy]
+    Policy --> Chat
+    Query --> BM25
     Query --> Dense
     BM25 --> RRF[Reciprocal rank fusion]
     Dense --> RRF
@@ -34,7 +37,7 @@ Only the IPC book is bundled by default. IPC and general can refer to the same r
 
 `POST /chatbot/{domain}` accepts the current question, bounded request history, retrieval method, and `answer_mode`. Excerpt mode returns retrieved text directly without a provider call. Auto mode attempts generation when a key is configured. The generation path requests a JSON answer and validates returned source identifiers against the retrieved evidence; malformed output must not be presented as a successfully grounded answer.
 
-The response exposes the actual mode (`generated`, `excerpts`, or `no_evidence`), a reason, sources, retrieval metadata, and a request ID. Citation validation bounds references to available evidence; it cannot prove entailment or legal correctness. Missing evidence is surfaced rather than inventing a source. A conservative keyword guard declines explicitly current-law/BNS/BNSS/BSA questions on the historical IPC corpus before any provider call; this is a scope guard, not a complete legal-intent classifier.
+The response exposes the actual mode (`generated`, `excerpts`, or `no_evidence`), a reason, sources, retrieval metadata, and a request ID. Citation validation bounds references to available evidence; it cannot prove entailment or legal correctness. Missing evidence is surfaced rather than inventing a source. Before chat retrieval, a local classifier estimates scope and intent using frozen MiniLM embeddings and two logistic-regression heads. Acceptance thresholds can return `uncertain`; no percentage is displayed as accuracy. Independent deterministic guards detect explicit new-statute/current-law language and dated applicability requests. A current/cross-era classification or explicit guard stops chat retrieval on historical/unverified sources and reports that it was skipped. Unavailable classification or uncertain scope/intent still permits retrieval but uses excerpts. These are conservative routing decisions, not a complete legal-intent or applicability system. Standalone search remains available and no source is automatically selected. See [classifier details](docs/CLASSIFICATION.md).
 
 Provider calls have a 30-second timeout and no SDK retry loop. Provider state is process-local: authentication/quota failures suppress calls for 300 seconds, transient failures for 60 seconds. During that cooldown retrieval remains available through excerpts. Restart after replacing the environment key/model; expiry permits a new provider attempt. This is a single-process local-demo circuit, not distributed rate limiting.
 
@@ -58,4 +61,4 @@ Legacy Flask, Streamlit, notebooks, and Llama experiments are preserved but are 
 
 Docker Compose uses one CPU backend and one frontend. The backend's instance volume holds SQLite, embeddings, and the optional model cache. Source PDFs mount read-only. The image also includes the bundled book for use without that bind mount. The build context excludes `.env`, databases, logs, local caches, and historical code. No embedding model or credential is included in the image. See [deployment notes](docs/DEPLOYMENT.md).
 
-Build-only CI verifies code/dependency consistency; it is not legal evaluation. No performance, retrieval-quality, or answer-accuracy benchmark is claimed in this release. `/health` reports provider configuration with provider health explicitly `not_checked`; it does not initialize retrieval or establish provider readiness.
+Build-only CI verifies code/dependency consistency; it is not legal evaluation. The classifier has a small authored split evaluation described separately; it does not establish real-user, multilingual, or legal-answer accuracy. No performance, retrieval-quality, or answer-accuracy benchmark is claimed in this release. `/health` reports provider configuration with provider health explicitly `not_checked`; it does not initialize retrieval or establish provider readiness.
