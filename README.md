@@ -1,31 +1,39 @@
-# Legal Lens
+# Legal Lens 2.0
 
-A local legal-document retrieval prototype with BM25 search, TF-IDF document similarity, PDF-based AI chat, a FastAPI backend, and a Next.js interface. Open the dashboard directly: no account, registration, or login is required.
+A source-backed research workspace for a historical Indian legal corpus. Search and the assistant share PDF-page retrieval, every returned passage has a source link, and the demo works without an API key. The dashboard opens directly; no signup is required.
 
-## Run locally
+**Corpus scope:** the bundled *Indian Penal Code Book* is historical research material. It is not a complete current-law collection. The app does not include a verified BNS/BNSS/BSA update, legal advice, or a measured answer-accuracy claim.
 
-Requirements: Python 3.12, Node.js 20.9 or newer, and npm. The checked-in Python lock records the verified Windows/Python 3.12 environment.
+## What is included
+
+- Shared BM25 and optional MiniLM semantic retrieval, combined using reciprocal rank fusion (RRF).
+- PDF page numbers, source excerpts, a registered-source catalogue, and links to the original PDF page.
+- A grounded assistant with explicit generated-answer, document-excerpt, and no-evidence states. Local excerpt mode does not need OpenAI credits.
+- A research workspace with source inspection and a downloadable Markdown research brief.
+- Browser conversation history, source availability, feedback persistence, and the existing document-similarity graph.
+- A Windows launcher, optional Docker Compose packaging, and build-only GitHub checks.
+
+See [architecture](ARCHITECTURE.md), the [five-minute demo](docs/DEMO.md), [deployment notes](docs/DEPLOYMENT.md), [release scope](docs/RELEASE.md), and the [verification record](docs/VERIFICATION.md).
+
+## Run locally on Windows
+
+Requirements: Python 3.12, Node.js 22, npm. The Python lock originated from a Windows/Python 3.12 environment.
 
 From the repository root, in PowerShell:
 
 ```powershell
-cd backend
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-lock.txt
-Copy-Item .env.example .env  # first setup only; preserve an existing .env
-cd ../frontend
+python -m venv backend/.venv
+.\backend\.venv\Scripts\python.exe -m pip install -r backend/requirements-lock.txt
+if (!(Test-Path backend/.env)) { Copy-Item backend/.env.example backend/.env }
+Push-Location frontend
 npm ci
-cd ..
+Pop-Location
 .\start-local.ps1
 ```
 
-The launcher starts background processes with logs in the project root. It leaves occupied ports alone; if another application owns ports 3000 or 8000, stop that application or use manual startup with different ports and matching API/CORS settings.
+Open the [dashboard](http://localhost:3000/dashboard), [API docs](http://localhost:8000/docs), or [health endpoint](http://localhost:8000/health). The launcher creates background processes and writes `*.stdout.log` / `*.stderr.log` in the project root. It leaves occupied ports alone. Stop an existing instance before restarting after backend changes.
 
-- Dashboard: http://localhost:3000/dashboard
-- API documentation: http://localhost:8000/docs
-- API health: http://localhost:8000/health
-
-For manual startup, use separate terminals:
+Manual startup uses two terminals:
 
 ```powershell
 cd backend
@@ -37,68 +45,75 @@ cd frontend
 npm run dev -- --hostname 127.0.0.1
 ```
 
-Manual backend startup reloads Python changes. The background launcher requires restarting the relevant process after backend configuration/code changes. The frontend development server reloads page changes.
+The default PDF is bundled and contains 1,871 physical pages. The older CSV preparation produced 1,844 text-bearing page records; these are pages from one book, not separate judgments. Try **What does Section 302 say about punishment for murder?** and inspect the cited source page. First PDF extraction can take time; later requests reuse in-memory resources.
+
+### Enable semantic retrieval
+
+BM25 retrieval works without downloading an embedding model. To enable hybrid retrieval, download the default model once from the repository root:
+
+```powershell
+.\backend\.venv\Scripts\python.exe -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')"
+```
+
+Then restart the backend, or wait one minute before retrying hybrid search. Request-time model loading only uses the local cache. If the model is absent or unavailable, the response reports a warning and the actual BM25 retrieval method. Embedding arrays persist under `backend/instance`; changed PDF/model inputs invalidate their cache. No pickle index is loaded.
+
+### Optional generated answers
+
+Set `OPENAI_API_KEY` and an available `OPENAI_MODEL` in **backend/.env**, then restart the backend. A key alone does not guarantee API credits or model access. An absent key uses excerpts; provider failures also fall back to excerpts with a visible reason. Quota/authentication failures pause provider calls for five minutes; transient failures pause them for one minute. Requests retry after that cooldown. Updating an environment variable still requires a backend restart.
+
+Questions explicitly asking about current/latest law or BNS/BNSS/BSA are declined when the selected corpus is the historical IPC book. Generated answers are a convenience layer over retrieved passages. Check the citations and source text yourself; validating a citation ID does not prove that a claim is legally correct. Only the last 40 submitted history messages are accepted. Conversation history stays in the current browser page and survives changes to the search method. Switching the corpus or refreshing clears it, as the composer states. The backend stores no shared conversation memory.
 
 ## Configuration
 
-Backend configuration loads `backend/.env` before all settings. Process environment variables take precedence. The optional frontend configuration is `frontend/.env.local`, based on `frontend/.env.example`.
+Process environment variables override `backend/.env`. Frontend variables belong in `frontend/.env.local` or the container build configuration. Secrets, databases, caches, and logs are Git-ignored.
 
 | Setting | Purpose |
 | --- | --- |
-| `DATA_PATH` | Optional CSV corpus path, relative to the repository root or absolute. Requires a `text` column; `name` is optional. |
-| `OPENAI_API_KEY` | Required for AI chat; keep it in backend/.env. Never put it in a frontend/public variable. |
-| `EMBEDDING_MODEL` | Hugging Face embedding model; defaults to `sentence-transformers/all-MiniLM-L6-v2` for local CPU use. |
-| `OPENAI_MODEL` | Chat model; defaults to `gpt-3.5-turbo`. Must be available to the configured API project. |
-| `CHATBOT_IPC_PDF` | Overrides the bundled IPC PDF. |
-| `CHATBOT_MURDER_PDF`, `CHATBOT_CHILD_PDF`, `CHATBOT_MATERNITY_PDF` | PDFs for the other domains. Configure them before using those tabs. |
-| `DATABASE_URL` | Optional database URL; defaults to `backend/instance/legal_lens.db`. |
-| `NEXT_PUBLIC_API_URL` | Frontend API URL; defaults to `http://localhost:8000`. |
+| `OPENAI_API_KEY` | Optional server-only credential for generated answers. Never use a public frontend variable. |
+| `OPENAI_MODEL` | Generation model available to the API project; existing default is `gpt-3.5-turbo`. |
+| `EMBEDDING_MODEL` | Cached SentenceTransformers model; default `sentence-transformers/all-MiniLM-L6-v2`. |
+| `CHATBOT_IPC_PDF` | Optional replacement for the bundled PDF; replacements are marked unverified. |
+| `CHATBOT_MURDER_PDF`, `CHATBOT_CHILD_PDF`, `CHATBOT_MATERNITY_PDF` | Optional PDFs for additional domains. Missing sources stay unavailable. |
+| `DATABASE_URL` | Defaults to SQLite at `backend/instance/legal_lens.db`; currently stores feedback. |
+| `DATA_PATH` | Optional CSV for the legacy `/search/bm25` endpoint. It does not replace the shared PDF source registry. |
+| `NEXT_PUBLIC_API_URL` | Browser-accessible API base URL; defaults to `http://localhost:8000`. Baked into production builds. |
+| `HF_HOME` | Optional Hugging Face model-cache location. |
 
-Real `.env` files, databases, logs, and local dependency folders are Git-ignored. Example environment files are safe to commit.
+## API at a glance
 
-## Search and graph
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /health` | Lightweight application health. |
+| `GET /sources` | Registered source catalogue, availability, and historical/unverified labels. |
+| `GET /sources/{document_id}/pdf` | Serve a registered PDF; source links use `?version=SHA256#page=N`. |
+| `POST /search/retrieve` | Shared source retrieval: `query`, `domain`, `top_k` (1–20), `method` (`hybrid` or `bm25`). |
+| `GET /chatbot/status` | Per-domain assistant availability and provider configuration information. |
+| `POST /chatbot/{domain}` | `message`, optional `history`, retrieval `method`, and `answer_mode` (`auto` or `excerpts`). |
+| `POST /feedback/submit` | Validated feedback written to SQLite. |
 
-To use the bundled book as a real search corpus, run `backend/.venv/Scripts/python.exe backend/prepare_corpus.py` from the repository root. Set `DATA_PATH=backend/instance/ipc_corpus.csv` in `backend/.env`, then restart the backend. Each result identifies its original PDF page. This local checkout has been configured this way.
+Shared retrieval returns page-aware sources plus the actual method and elapsed time. Version-pinned PDF links return HTTP 409 if the source has changed, so stale citations cannot silently open a different file. Chat returns `mode` (`generated`, `excerpts`, or `no_evidence`), `reason`, `sources`, retrieval metadata, and a request ID alongside the response text. Full schemas are in `/docs`.
 
-Without `DATA_PATH`, search uses three demonstration documents. The dashboard labels this clearly. Try `maternity benefit`, `murder`, or `child labour`. An invalid configured corpus produces a configuration error rather than silently switching to demo data.
+The legacy `/search/bm25`, `/knowledge-graph/generate`, and `/rerank/cosine` routes remain for compatibility. The graph uses TF-IDF similarity over the first 50 words and ranks by average within-set similarity. It is a document-similarity visualization, not a legal entity graph or a query-aware reranker. The legacy CSV search uses a labeled three-document demo when `DATA_PATH` is unset; invalid configured files produce an error.
 
-`POST /search/bm25` accepts `{"query":"maternity benefit","top_k":10}`. `top_k` must be between 1 and 50. Results include text, name, score, and rank. Empty results have an explicit message in the dashboard.
-
-The **Process → Knowledge Graph** action submits retrieved documents to `/knowledge-graph/generate`. The service uses at most the first 50 words to calculate pairwise TF-IDF cosine similarities. It returns distinct document nodes (even when names repeat), weighted edges, and up to three documents ranked by average similarity, including self-similarity. `/rerank/cosine` exposes the same ranking separately.
-
-This graph shows document similarity; it does not extract legal entities or relations. The second ranking measures similarity within the retrieved set, not relevance to the original query. Search results are not fed into the chatbot.
-
-## AI chatbot
-
-The server extracts text from the selected PDF using PyMuPDF, splits it into chunks of up to 900 characters with 100-character overlap, embeds the chunks with `sentence-transformers/all-MiniLM-L6-v2`, and retrieves them through FAISS. LangChain calls the configured OpenAI model with that context.
-
-Only the IPC PDF is bundled at the default application path. Missing PDFs are reported explicitly; a different domain is never silently substituted. `/chatbot/status` reports configuration availability, which the interface uses to disable unavailable chat tabs' input. A configured status is not an end-to-end provider/model health check.
-
-Conversation history is maintained separately per domain in the current browser page. The backend receives the last 40 messages on each request and caches only retrieval chains without conversation memory. A new browser visitor has no prior visitor's history. Refreshing clears conversation history.
-
-The first chat can take longer while the embedding model downloads and the PDF index is built. Embedding arrays are cached without pickle under `backend/instance/embeddings`; their cache key includes the PDF contents, model, and chunking configuration, so restarts reuse them and changed inputs rebuild them. Internet access is needed for the initial Hugging Face model download and for OpenAI calls. If the AI provider has no credits, rejects the key, or is temporarily unavailable, the assistant returns clearly labeled document excerpts from local retrieval. Those passages are not AI-generated answers. After adding API credits or replacing a rejected key, restart the backend to retry AI generation. Missing PDFs and local model/index failures are reported as errors. Structured source citations and legal-answer accuracy evaluation remain future work.
-
-## Feedback
-
-Feedback requires a non-empty message; subject and email are optional. Valid submissions persist in SQLite. Invalid inputs return validation errors that the UI displays.
-
-## Verification
+## Build checks
 
 ```powershell
-cd backend
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
-.\.venv\Scripts\python.exe -m pip check
-cd ../frontend
+.\backend\.venv\Scripts\python.exe -m compileall -q backend/app backend/run.py backend/prepare_corpus.py
+.\backend\.venv\Scripts\python.exe -m pip check
+Push-Location frontend
 npm run lint
 npx tsc --noEmit --incremental false
 npm run build
+Pop-Location
 ```
 
-The regression suite uses an isolated temporary database and mocks AI calls. It covers configuration loading, demo and invalid corpus search, invalid input, duplicate graph names, feedback persistence, missing chatbot configuration, request-scoped chat history, and removal of the public account endpoints. It does not validate legal correctness or replace an end-to-end live AI check.
+GitHub Actions runs dependency, syntax/import, frontend lint/type/build, and Compose configuration checks. It does not run the historical regression suite, use paid model calls, download an embedding model, or establish legal accuracy. Manual demo steps are documented separately; do not claim a check passed until its output is recorded.
 
-## Scope and remaining work
+## Scope and next steps
 
-This is a local prototype. The demo corpus is small, supplied documents are historical research material, and no current-law completeness or answer-accuracy claim is made. Production authentication/access controls, source citations, labeled retrieval evaluation, per-session history persistence, and corpus provenance need separate work. The original Flask, Streamlit, notebook, and Llama experiments are preserved; the supported local application is `backend/` plus `frontend/`.
+This release prioritizes a working local research demo. Current-law ingestion with official provenance, cross-encoder reranking, OCR, multilingual evaluation, persistent private workspaces, public-hosting access controls, and a labeled retrieval benchmark remain future work. A generation-provider outage should not block document retrieval. Network access is needed for installation, the optional model download, and generated answers.
+
+The Docker configuration is a local packaging option; see [deployment status](docs/DEPLOYMENT.md) for its verification limits. The Windows launcher remains the supported local startup path.
 
 ## Contributors and project history
 
@@ -113,4 +128,3 @@ Developed as **CSE508 Winter 2024, Group 44**, with contributions from:
 The original notebooks, Flask/Streamlit components and Llama experiments remain in the repository. The `backend/` and `frontend/` directories contain the later FastAPI/Next.js application; [the refactor commit](https://github.com/YashwantRana23/CSE508_Winter2024_Project/commit/d681f4b01e1ca9872389c9a47ae59097a888d7a0) is attributed to `yashwant938`. This is collaborative work, not a sole-authorship claim.
 
 Original project references: [legal-document structuring corpus](https://arxiv.org/abs/2201.13125), [legal judgment prediction](https://arxiv.org/abs/2112.06370), [Indian court judgment NER](https://arxiv.org/abs/2211.03442), and [LegalEval](https://arxiv.org/abs/2304.09548).
-
