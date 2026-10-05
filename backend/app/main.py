@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.database import init_db
-from app.routers import auth, search, knowledge_graph, rerank, chatbot, feedback
+from app.routers import search, knowledge_graph, rerank, chatbot, feedback
 
 
 @asynccontextmanager
@@ -27,7 +27,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router)
 app.include_router(search.router)
 app.include_router(knowledge_graph.router)
 app.include_router(rerank.router)
@@ -37,4 +36,4 @@ app.include_router(feedback.router)
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "ok", "corpus_mode": "configured" if get_settings().DATA_PATH else "demo"}

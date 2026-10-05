@@ -36,7 +36,9 @@ def _resolve_data_path() -> Path | None:
     p = Path(path)
     if not p.is_absolute():
         p = PROJECT_ROOT / p
-    return p if p.exists() else None
+    if not p.is_file():
+        raise ValueError("DATA_PATH must point to an existing CSV file.")
+    return p
 
 
 def _load_corpus() -> Tuple[pd.DataFrame, List[List[str]]]:
@@ -49,12 +51,15 @@ def _load_corpus() -> Tuple[pd.DataFrame, List[List[str]]]:
     if path:
         df = pd.read_csv(path)
         if "text" not in df.columns:
-            df = df.rename(columns={df.columns[0]: "text"})
-        if "name" not in df.columns and len(df.columns) >= 2:
-            df["name"] = df.iloc[:, 1].astype(str)
-        elif "name" not in df.columns:
-            df["name"] = [f"doc_{i}" for i in range(len(df))]
+            raise ValueError("The search CSV must contain a text column.")
         df["text"] = df["text"].fillna("").astype(str)
+        df = df[df["text"].str.strip().ne("")].reset_index(drop=True)
+        if "name" not in df.columns:
+            df["name"] = [f"doc_{i}" for i in range(len(df))]
+        df["name"] = df["name"].fillna("").astype(str).str.strip()
+        df["name"] = [name or f"doc_{i}" for i, name in enumerate(df["name"])]
+        if df.empty:
+            raise ValueError("The search CSV contains no non-empty documents.")
     else:
         # Minimal in-memory corpus so app runs without DATA_PATH
         df = pd.DataFrame({
@@ -68,6 +73,10 @@ def _load_corpus() -> Tuple[pd.DataFrame, List[List[str]]]:
 
     _corpus_df = df
     _tokens_list = [preprocess_string(t) for t in df["text"].tolist()]
+    if not any(_tokens_list):
+        _corpus_df = None
+        _tokens_list = None
+        raise ValueError("The search CSV contains no searchable words.")
     return _corpus_df, _tokens_list
 
 

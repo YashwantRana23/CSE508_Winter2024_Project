@@ -15,25 +15,6 @@ export const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-api.interceptors.request.use((config) => {
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("legal_lens_token");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-// Auth
-export async function register(name: string, email: string, password: string) {
-  const { data } = await api.post("/auth/register", { name, email, password });
-  return data;
-}
-
-export async function login(email: string, password: string) {
-  const { data } = await api.post("/auth/login", { email, password });
-  return data;
-}
-
 // Search
 export async function bm25Search(query: string, topK = 10) {
   const { data } = await api.post("/search/bm25", { query, top_k: topK });
@@ -61,5 +42,21 @@ export async function chat(domain: string, message: string, history?: { role: st
 // Feedback
 export async function submitFeedback(message: string, subject?: string, email?: string) {
   const { data } = await api.post("/feedback/submit", { message, subject, email });
+  return data;
+}
+
+export function getErrorMessage(error: unknown, fallback: string): string {
+  if (axios.isAxiosError(error)) {
+    const detail = error.response?.data?.detail;
+    if (typeof detail === "string") return detail;
+    if (Array.isArray(detail)) return detail.map((item) => item.msg).join("; ");
+    if (!error.response) return "Cannot reach the server. Make sure the backend is running on port 8000.";
+  }
+  return fallback;
+}
+
+export type ChatStatus = Record<string, { available: boolean; reason: string }>;
+export async function getChatStatus(): Promise<ChatStatus> {
+  const { data } = await api.get("/chatbot/status");
   return data;
 }

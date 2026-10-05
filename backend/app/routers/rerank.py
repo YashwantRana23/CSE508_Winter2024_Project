@@ -9,5 +9,5 @@ router = APIRouter(prefix="/rerank", tags=["rerank"])
 @router.post("/cosine", response_model=RerankResponse)
 def rerank_cosine(req: KGGenerateRequest):
     """Rerank documents by cosine similarity; returns top 3."""
-    top_3 = knowledge_graph_service.rerank_top_3(req.documents)
+    top_3 = knowledge_graph_service.rerank_top_3([d.model_dump() for d in req.documents])
     return RerankResponse(top_3=top_3)

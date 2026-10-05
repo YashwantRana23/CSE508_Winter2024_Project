@@ -33,6 +33,7 @@ def _get_env(key: str, default: Optional[str] = None) -> Optional[str]:
 
 def get_settings():
     """Return settings object with env-based config."""
+    _load_dotenv()
     class Settings:
         APP_NAME = os.environ.get("APP_NAME", "Legal Lens API")
         DEBUG = os.environ.get("DEBUG", "false").lower() == "true"
@@ -48,6 +49,8 @@ def get_settings():
         DATA_PATH = _get_env("DATA_PATH")
         BM25_TOP_K = int(os.environ.get("BM25_TOP_K", "10"))
         OPENAI_API_KEY = _get_env("OPENAI_API_KEY")
+        EMBEDDING_MODEL = _get_env("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+        OPENAI_MODEL = _get_env("OPENAI_MODEL", "gpt-3.5-turbo")
         CHATBOT_MURDER_PDF = _get_env("CHATBOT_MURDER_PDF")
         CHATBOT_CHILD_PDF = _get_env("CHATBOT_CHILD_PDF")
         CHATBOT_MATERNITY_PDF = _get_env("CHATBOT_MATERNITY_PDF")

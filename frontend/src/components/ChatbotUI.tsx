@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { chat } from "@/lib/api";
+import { chat, getChatStatus, getErrorMessage, type ChatStatus } from "@/lib/api";
 
 const DOMAINS = [
   { id: "murder", label: "Murder Law" },
@@ -12,6 +12,8 @@ const DOMAINS = [
 
 type DomainId = (typeof DOMAINS)[number]["id"];
 
+const EMPTY_MESSAGES: Message[] = [];
+
 interface Message {
   role: "user" | "assistant";
   content: string;
@@ -20,10 +22,18 @@ interface Message {
 export function ChatbotUI() {
   const [domain, setDomain] = useState<DomainId>("ipc");
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [conversations, setConversations] = useState<Partial<Record<DomainId, Message[]>>>({});
+  const messages = conversations[domain] ?? EMPTY_MESSAGES;
+  const [status, setStatus] = useState<ChatStatus>({});
+  const [statusError, setStatusError] = useState("");
+  const available = status[domain]?.available === true;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    getChatStatus().then(setStatus).catch((err) => setStatusError(getErrorMessage(err, "Could not check chatbot availability.")));
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -32,19 +42,23 @@ export function ChatbotUI() {
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     const text = input.trim();
-    if (!text || loading) return;
+    if (!text || loading || !available) return;
+    const requestDomain = domain;
+    function appendMessage(message: Message) {
+      setConversations((prev) => ({ ...prev, [requestDomain]: [...(prev[requestDomain] ?? []), message] }));
+    }
     setInput("");
     setError("");
-    setMessages((prev) => [...prev, { role: "user", content: text }]);
+    appendMessage({ role: "user", content: text });
     setLoading(true);
     try {
-      const history = messages.map((m) => ({ role: m.role, content: m.content }));
+      const history = messages.slice(-40).map((m) => ({ role: m.role, content: m.content }));
       const res = await chat(domain, text, history);
-      setMessages((prev) => [...prev, { role: "assistant", content: res.response }]);
+      appendMessage({ role: "assistant", content: res.response });
     } catch (err: unknown) {
-      const msg = (err as { message?: string })?.message || "Failed to get response";
+      const msg = getErrorMessage(err, "Failed to get response");
       setError(msg);
-      setMessages((prev) => [...prev, { role: "assistant", content: `Error: ${msg}` }]);
+
     } finally {
       setLoading(false);
     }
@@ -57,7 +71,8 @@ export function ChatbotUI() {
         {DOMAINS.map((d) => (
           <button
             key={d.id}
-            onClick={() => setDomain(d.id)}
+            disabled={loading}
+            onClick={() => { setDomain(d.id); setError(""); }}
             className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
               domain === d.id
                 ? "bg-indigo-600 text-white"
@@ -68,6 +83,11 @@ export function ChatbotUI() {
           </button>
         ))}
       </div>
+      {!available && (
+        <p role="status" className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+          {statusError || status[domain]?.reason || "Checking assistant availability…"}
+        </p>
+      )}
       <div className="rounded-xl border border-slate-200 bg-slate-50">
         <div className="flex h-[360px] flex-col">
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -105,6 +125,8 @@ export function ChatbotUI() {
             <div className="flex gap-2">
               <input
                 type="text"
+                aria-label="Legal question"
+                disabled={!available || loading}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your legal question..."
@@ -112,7 +134,7 @@ export function ChatbotUI() {
               />
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !available || !input.trim()}
                 className="rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
               >
                 Send

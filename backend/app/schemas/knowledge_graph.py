@@ -1,9 +1,13 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
+
+class Document(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+    text: str = Field(min_length=1, max_length=100000)
+    name: str = Field(min_length=1, max_length=500)
 
 class KGGenerateRequest(BaseModel):
-    """Request body: list of documents (text + name) from BM25 top results."""
-    documents: list[dict]  # [{"text": "...", "name": "..."}, ...]
+    documents: list[Document] = Field(max_length=50)
 
 
 class KGNode(BaseModel):
