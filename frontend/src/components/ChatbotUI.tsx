@@ -1,149 +1,130 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { chat, getChatStatus, getErrorMessage, type ChatStatus } from "@/lib/api";
+import { useEffect, useRef, useState } from "react";
+import { chat, getErrorMessage, isCancelled } from "@/lib/api";
+import { downloadResearchBrief } from "@/lib/research-brief";
+import { SourceCard } from "@/components/SourceCard";
+import type { AnswerMode, ChatResponse, HistoryMessage, RetrievalMethod, Source } from "@/types";
 
-const DOMAINS = [
-  { id: "murder", label: "Murder Law" },
-  { id: "child", label: "Child Law" },
-  { id: "maternity", label: "Maternity Law" },
-  { id: "ipc", label: "Indian Penal Code (General)" },
-] as const;
-
-type DomainId = (typeof DOMAINS)[number]["id"];
-
-const EMPTY_MESSAGES: Message[] = [];
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
+interface Message extends HistoryMessage {
+  result?: ChatResponse;
+  question?: string;
 }
 
-export function ChatbotUI() {
-  const [domain, setDomain] = useState<DomainId>("ipc");
+const modeLabel = { generated: "AI-generated answer", excerpts: "Document excerpts", no_evidence: "No supporting evidence" };
+
+export function ChatbotUI({ domain, domainLabel, method, available, selectedSource, onSelect }: { domain: string; domainLabel: string; method: RetrievalMethod; available: boolean; selectedSource: Source | null; onSelect: (source: Source) => void }) {
   const [input, setInput] = useState("");
-  const [conversations, setConversations] = useState<Partial<Record<DomainId, Message[]>>>({});
-  const messages = conversations[domain] ?? EMPTY_MESSAGES;
-  const [status, setStatus] = useState<ChatStatus>({});
-  const [statusError, setStatusError] = useState("");
-  const available = status[domain]?.available === true;
+  const [answerMode, setAnswerMode] = useState<AnswerMode>("auto");
+  const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const [notice, setNotice] = useState("");
+  const [retry, setRetry] = useState<{ text: string; history: HistoryMessage[] } | null>(null);
+  const controller = useRef<AbortController | null>(null);
+  const latest = [...messages].reverse().find((message) => message.result);
 
-  useEffect(() => {
-    getChatStatus().then(setStatus).catch((err) => setStatusError(getErrorMessage(err, "Could not check chatbot availability.")));
-  }, []);
+  useEffect(() => () => controller.current?.abort(), []);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  async function handleSend(e: React.FormEvent) {
-    e.preventDefault();
-    const text = input.trim();
+  async function send(text: string, retryHistory?: HistoryMessage[]) {
     if (!text || loading || !available) return;
-    const requestDomain = domain;
-    function appendMessage(message: Message) {
-      setConversations((prev) => ({ ...prev, [requestDomain]: [...(prev[requestDomain] ?? []), message] }));
-    }
+    const history = retryHistory ?? messages.slice(-16).map(({ role, content }) => ({ role, content }));
+    const request = new AbortController();
+    controller.current?.abort();
+    controller.current = request;
+    if (!retryHistory) setMessages((previous) => [...previous, { role: "user", content: text }]);
     setInput("");
     setError("");
-    appendMessage({ role: "user", content: text });
+    setNotice("");
+    setRetry(null);
     setLoading(true);
     try {
-      const history = messages.slice(-40).map((m) => ({ role: m.role, content: m.content }));
-      const res = await chat(domain, text, history);
-      appendMessage({ role: "assistant", content: res.response });
-    } catch (err: unknown) {
-      const msg = getErrorMessage(err, "Failed to get response");
-      setError(msg);
-
+      const result = await chat(domain, text, history, method, answerMode, request.signal);
+      if (controller.current !== request || request.signal.aborted) return;
+      setMessages((previous) => [...previous, { role: "assistant", content: result.response, question: text, result }]);
+    } catch (err) {
+      if (controller.current !== request) return;
+      if (!isCancelled(err)) {
+        setError(getErrorMessage(err, "Could not complete your question. Please retry."));
+        setRetry({ text, history });
+      }
     } finally {
-      setLoading(false);
+      if (controller.current === request) {
+        controller.current = null;
+        setLoading(false);
+      }
     }
   }
 
+  function cancel() {
+    controller.current?.abort();
+    controller.current = null;
+    setLoading(false);
+    setNotice("Request cancelled. You can ask another question.");
+  }
+
+  function clearConversation() {
+    controller.current?.abort();
+    controller.current = null;
+    setMessages([]);
+    setInput("");
+    setLoading(false);
+    setError("");
+    setRetry(null);
+    setNotice("");
+  }
+
+  function exportLatest() {
+    if (!latest?.result) return;
+    downloadResearchBrief({
+      question: latest.question ?? "",
+      domain: domainLabel,
+      mode: modeLabel[latest.result.mode],
+      retrievalMethod: latest.result.retrieval.method,
+      response: latest.content,
+      reason: latest.result.reason,
+      sources: latest.result.sources,
+    });
+  }
+
   return (
-    <div>
-      <h2 className="mb-4 text-lg font-semibold text-slate-800">Domain-specific Chatbot</h2>
-      <div className="mb-4 flex flex-wrap gap-2">
-        {DOMAINS.map((d) => (
-          <button
-            key={d.id}
-            disabled={loading}
-            onClick={() => { setDomain(d.id); setError(""); }}
-            className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
-              domain === d.id
-                ? "bg-indigo-600 text-white"
-                : "bg-slate-200 text-slate-700 hover:bg-slate-300"
-            }`}
-          >
-            {d.label}
-          </button>
+    <section className="research-panel" aria-labelledby="assistant-heading">
+      <div className="section-heading">
+        <div><p className="eyebrow">Research assistant</p><h2 id="assistant-heading">Ask. Inspect. Verify.</h2></div>
+        {messages.length > 0 && <button type="button" className="text-button" onClick={clearConversation}>Clear conversation</button>}
+      </div>
+      <div className="assistant-options">
+        <label htmlFor="answer-mode">Answer mode</label>
+        <select id="answer-mode" value={answerMode} disabled={loading} onChange={(event) => setAnswerMode(event.target.value as AnswerMode)}>
+          <option value="auto">Auto · AI with excerpt fallback</option>
+          <option value="excerpts">Document excerpts · no AI generation</option>
+        </select>
+      </div>
+      <p className="helper-text">{answerMode === "auto" ? "Answers use retrieved passages. If generation is unavailable, the result is clearly labeled as document excerpts." : "Find and read original passages without an AI-generated interpretation."}</p>
+
+      <div className="conversation" aria-live="polite" aria-relevant="additions" aria-busy={loading}>
+        {messages.length === 0 && <div className="chat-empty"><span className="small-mark" aria-hidden="true">§</span><h3>A question is a starting point.</h3><p>Ask about the selected corpus. Every response keeps its source passages close by.</p><button type="button" className="suggestion" disabled={!available} onClick={() => setInput("What does Section 302 of the IPC say about punishment for murder?")}>Try: What does Section 302 say? <span aria-hidden="true">↗</span></button></div>}
+        {messages.map((message, index) => (
+          <article key={index} className={`chat-message ${message.role}`}>
+            <div className="message-heading"><span>{message.role === "user" ? "You" : "Legal Lens"}</span>{message.result && <span className={`badge ${message.result.mode === "generated" ? "teal" : "amber"}`}>{modeLabel[message.result.mode]}</span>}</div>
+            <p className="message-content">{message.content}</p>
+            {message.result?.reason && <p className="mode-note">{message.result.reason}</p>}
+            {message.result?.retrieval.warning && <p className="mode-note">{message.result.retrieval.warning}</p>}
+            {!!message.result?.sources.length && <details className="answer-sources"><summary>Inspect {message.result.sources.length} source passages</summary><div className="source-list">{message.result.sources.map((source) => <SourceCard key={source.id} source={source} compact selected={source.id === selectedSource?.id} onSelect={onSelect} />)}</div></details>}
+            {message.result && <p className="fineprint">{message.result.retrieval.method === "hybrid" ? "Hybrid retrieval" : "Keyword retrieval"} · {Math.round(message.result.retrieval.elapsed_ms)} ms retrieval</p>}
+          </article>
         ))}
+        {loading && <div className="loading-state" role="status"><span className="loading-dot" />{method === "hybrid" ? "Finding source evidence. The first hybrid request may take longer…" : "Finding source evidence…"}</div>}
       </div>
-      {!available && (
-        <p role="status" className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
-          {statusError || status[domain]?.reason || "Checking assistant availability…"}
-        </p>
-      )}
-      <div className="rounded-xl border border-slate-200 bg-slate-50">
-        <div className="flex h-[360px] flex-col">
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.length === 0 && (
-              <p className="text-center text-slate-500">
-                Ask a question about {DOMAINS.find((d) => d.id === domain)?.label}. The assistant uses the selected legal domain.
-              </p>
-            )}
-            {messages.map((m, i) => (
-              <div
-                key={i}
-                className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-2 ${
-                    m.role === "user"
-                      ? "bg-indigo-600 text-white"
-                      : "bg-white text-slate-800 shadow border border-slate-200"
-                  }`}
-                >
-                  <p className="text-sm whitespace-pre-wrap">{m.content}</p>
-                </div>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex justify-start">
-                <div className="rounded-2xl bg-white px-4 py-2 shadow border border-slate-200">
-                  <span className="text-sm text-slate-500">Thinking…</span>
-                </div>
-              </div>
-            )}
-            <div ref={bottomRef} />
-          </div>
-          <form onSubmit={handleSend} className="border-t border-slate-200 p-3">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                aria-label="Legal question"
-                disabled={!available || loading}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your legal question..."
-                className="flex-1 rounded-lg border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              />
-              <button
-                type="submit"
-                disabled={loading || !available || !input.trim()}
-                className="rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-              >
-                Send
-              </button>
-            </div>
-            {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-          </form>
-        </div>
-      </div>
-    </div>
+
+      <form className="chat-compose" onSubmit={(event) => { event.preventDefault(); void send(input.trim()); }}>
+        <label className="sr-only" htmlFor="legal-question">Ask a legal research question</label>
+        <textarea id="legal-question" rows={3} maxLength={2000} disabled={!available || loading} value={input} onChange={(event) => setInput(event.target.value)} placeholder="Ask a question about the historical IPC corpus…" />
+        <div className="compose-actions"><span className="fineprint">Switching corpus or refreshing clears this conversation. Search-method changes apply to the next question.</span>{loading ? <button type="button" className="button secondary" onClick={cancel}>Cancel</button> : <button type="submit" className="button primary" disabled={!available || !input.trim()}>Ask assistant <span aria-hidden="true">↗</span></button>}</div>
+      </form>
+      {error && <div role="alert" className="error-notice">{error}{retry && <button type="button" className="text-button" disabled={loading} onClick={() => void send(retry.text, retry.history)}>Retry question</button>}</div>}
+      {notice && <p role="status" className="helper-text">{notice}</p>}
+      {latest?.result && <div className="brief-action"><div><strong>Keep the evidence.</strong><p>Download the latest answer, its question, scope, and source passages.</p></div><button type="button" className="button secondary" onClick={exportLatest}>Download brief ↓</button></div>}
+    </section>
   );
 }
