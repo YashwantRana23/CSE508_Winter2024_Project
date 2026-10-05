@@ -1,0 +1,257 @@
+{
+  "model_version": "minilm-question-router-v1",
+  "provenance": "Original agent-authored and agent-reviewed illustrative questions. No human/expert annotation or real-user validation.",
+  "limitation": "Small handcrafted English benchmark; measured performance is not legal accuracy, production reliability, or broad generalization. Related task families recur across splits.",
+  "method": {
+    "encoder_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "frozen_encoder": true,
+    "classifier": "sklearn LogisticRegression",
+    "C": 12.0,
+    "max_iter": 2000,
+    "random_state": 508,
+    "threshold_selection": "Validation only: maximum coverage with accepted accuracy >=0.95; ties prefer larger margin then larger score. Otherwise abstain on all.",
+    "scores": "Uncalibrated multinomial scores; not probabilities of legal correctness."
+  },
+  "split_counts": {
+    "train": 164,
+    "validation": 56,
+    "test": 56
+  },
+  "dataset_sha256": {
+    "train": "382d4fd08e96f000d8c83d5941fc5f852ebcb2541356f2d3eda32b6305fc4f80",
+    "validation": "936e21785efd8b44e691e64da65a38322ff0b1a2181c50e0fa771e428f54620c",
+    "test": "984bfbb2e0fe06ae0ba88a075b31c5b8d07c2b45878abeb891d3cfe7b93e0e23"
+  },
+  "heads": {
+    "scope": {
+      "training_labels": {
+        "historical": 60,
+        "current": 56,
+        "comparison": 24
+      },
+      "min_score": 0.65,
+      "min_margin": 0.3,
+      "validation": {
+        "count": 48,
+        "accuracy_without_abstention": 0.8958,
+        "macro_f1_without_abstention": 0.8319,
+        "accepted_count": 42,
+        "coverage": 0.875,
+        "accepted_accuracy": 0.9524,
+        "confusion_matrix_without_abstention": [
+          [
+            4,
+            3,
+            1
+          ],
+          [
+            0,
+            20,
+            0
+          ],
+          [
+            1,
+            0,
+            19
+          ]
+        ],
+        "class_order": [
+          "comparison",
+          "current",
+          "historical"
+        ],
+        "incorrect_ids_without_abstention": [
+          "validation-020",
+          "validation-043",
+          "validation-044",
+          "validation-045",
+          "validation-047"
+        ],
+        "abstained_ids": [
+          "validation-008",
+          "validation-020",
+          "validation-041",
+          "validation-042",
+          "validation-043",
+          "validation-045"
+        ]
+      },
+      "test": {
+        "count": 48,
+        "accuracy_without_abstention": 0.875,
+        "macro_f1_without_abstention": 0.7857,
+        "accepted_count": 42,
+        "coverage": 0.875,
+        "accepted_accuracy": 0.9286,
+        "confusion_matrix_without_abstention": [
+          [
+            3,
+            2,
+            3
+          ],
+          [
+            0,
+            20,
+            0
+          ],
+          [
+            1,
+            0,
+            19
+          ]
+        ],
+        "class_order": [
+          "comparison",
+          "current",
+          "historical"
+        ],
+        "incorrect_ids_without_abstention": [
+          "test-019",
+          "test-041",
+          "test-043",
+          "test-045",
+          "test-046",
+          "test-048"
+        ],
+        "abstained_ids": [
+          "test-019",
+          "test-040",
+          "test-041",
+          "test-044",
+          "test-045",
+          "test-047"
+        ]
+      }
+    },
+    "intent": {
+      "training_labels": {
+        "section_lookup": 48,
+        "explanation": 48,
+        "comparison": 44,
+        "unrelated": 24
+      },
+      "min_score": 0.65,
+      "min_margin": 0.4,
+      "validation": {
+        "count": 56,
+        "accuracy_without_abstention": 0.9286,
+        "macro_f1_without_abstention": 0.9294,
+        "accepted_count": 48,
+        "coverage": 0.8571,
+        "accepted_accuracy": 0.9583,
+        "confusion_matrix_without_abstention": [
+          [
+            15,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            15,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            15,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            7
+          ]
+        ],
+        "class_order": [
+          "comparison",
+          "explanation",
+          "section_lookup",
+          "unrelated"
+        ],
+        "incorrect_ids_without_abstention": [
+          "validation-019",
+          "validation-023",
+          "validation-032",
+          "validation-056"
+        ],
+        "abstained_ids": [
+          "validation-009",
+          "validation-011",
+          "validation-019",
+          "validation-023",
+          "validation-035",
+          "validation-037",
+          "validation-046",
+          "validation-055"
+        ]
+      },
+      "test": {
+        "count": 56,
+        "accuracy_without_abstention": 0.9464,
+        "macro_f1_without_abstention": 0.944,
+        "accepted_count": 46,
+        "coverage": 0.8214,
+        "accepted_accuracy": 0.9565,
+        "confusion_matrix_without_abstention": [
+          [
+            14,
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            16,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            16,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            7
+          ]
+        ],
+        "class_order": [
+          "comparison",
+          "explanation",
+          "section_lookup",
+          "unrelated"
+        ],
+        "incorrect_ids_without_abstention": [
+          "test-041",
+          "test-046",
+          "test-054"
+        ],
+        "abstained_ids": [
+          "test-014",
+          "test-020",
+          "test-024",
+          "test-026",
+          "test-029",
+          "test-033",
+          "test-041",
+          "test-043",
+          "test-048",
+          "test-051"
+        ]
+      }
+    }
+  },
+  "software_versions": {
+    "scikit-learn": "1.9.1",
+    "numpy": "2.5.3",
+    "sentence-transformers": "6.1.0",
+    "torch": "2.14.1",
+    "transformers": "5.18.0"
+  }
+}

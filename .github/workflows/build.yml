@@ -54,7 +54,7 @@ jobs:
           python -m pip install -r requirements-lock.txt
       - run: python -m pip check
       - name: Compile application source
-        run: python -m compileall -q app run.py prepare_corpus.py
+        run: python -m compileall -q app run.py prepare_corpus.py scripts
       - name: Import API with a keyless configuration
         run: python -c "from app.main import app; assert app.title"
         env:

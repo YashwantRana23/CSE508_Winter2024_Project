@@ -27,6 +27,14 @@ export interface SearchResponse {
   corpus_status: string | Record<string, unknown>;
 }
 
+export interface QuestionClassification {
+  status: "ready" | "unavailable";
+  model_version: string | null;
+  scope: "historical" | "current" | "comparison" | "uncertain";
+  intent: "section_lookup" | "explanation" | "comparison" | "unrelated" | "uncertain";
+  note: string;
+}
+
 export interface ChatResponse {
   response: string;
   domain: string;
@@ -35,6 +43,7 @@ export interface ChatResponse {
   sources: Source[];
   retrieval: RetrievalInfo;
   request_id: string;
+  classification?: QuestionClassification | null;
 }
 
 export interface HistoryMessage {

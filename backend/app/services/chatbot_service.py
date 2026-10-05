@@ -12,14 +12,14 @@ from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from app.config import get_settings
-from app.services import retrieval_service, source_service
+from app.services import classification_service, retrieval_service, source_service
+from app.services.question_policy import explicit_historical_reference, source_scope_reason
 
 PROVIDER_TIMEOUT_SECONDS = 30.0
 TRANSIENT_COOLDOWN_SECONDS = 60
 CONFIGURATION_COOLDOWN_SECONDS = 300
 _provider_lock = RLock()
 _provider_circuits: dict[str, tuple[float, str]] = {}
-_CURRENT_LAW = re.compile(r"\b(?:bns|bnss|bsa|bharatiya|current(?:ly)?|latest|today|new criminal laws?)\b", re.I)
 
 
 class EvidenceClaim(BaseModel):
@@ -126,6 +126,28 @@ def _generate(settings, message: str, history: list[dict], sources: list[dict]) 
 
 def chat(domain: str, message: str, history: list[dict] | None = None, *, method: str = "hybrid", answer_mode: str = "auto") -> dict:
     settings = get_settings()
+    scope_reason = source_scope_reason(message)
+    classification = classification_service.classify(message)
+    document = source_service.for_domain(domain)
+    # The model describes a question, never the currency of its source. Explicit
+    # scope rules continue to work when the local classifier is unavailable.
+    labels_accepted = classification["status"] == "ready" and "uncertain" not in (classification["scope"], classification["intent"])
+    scope_conflict = (
+        labels_accepted and scope_reason is None
+        and classification["scope"] in ("current", "comparison")
+        and explicit_historical_reference(message)
+    )
+    if labels_accepted and scope_reason is None and not scope_conflict and classification["scope"] in ("current", "comparison"):
+        scope_reason = "The local classifier identified a current-law or cross-era question; this is a routing estimate, not a legal determination."
+    if scope_reason and document.corpus_status in ("historical", "unverified"):
+        return {
+            "response": "The selected source cannot verify current law, cross-era mappings, or legal applicability. For historical research, ask specifically about a passage or provision in the selected book. Source search remains available to inspect the text.",
+            "domain": domain, "mode": "no_evidence",
+            "reason": f"{scope_reason} Selected source status: {document.corpus_status}.",
+            "sources": [],
+            "retrieval": {"method": method, "elapsed_ms": 0.0, "warning": "Retrieval skipped: the question needs source verification beyond the selected corpus."},
+            "request_id": str(uuid4()), "classification": classification,
+        }
     # Search and chat use precisely the same query/index. History affects generation
     # only, preventing stale previous topics from silently changing retrieved evidence.
     retrieval = retrieval_service.retrieve(message, domain, top_k=6, method=method)
@@ -133,18 +155,18 @@ def chat(domain: str, message: str, history: list[dict] | None = None, *, method
     result = {
         "response": "", "domain": domain, "mode": "excerpts", "reason": None,
         "sources": sources, "retrieval": retrieval["retrieval"], "request_id": str(uuid4()),
+        "classification": classification,
     }
-    if retrieval["corpus_status"] == "historical" and _CURRENT_LAW.search(message):
-        result.update(
-            mode="no_evidence", sources=[],
-            reason="The selected source is historical IPC material and cannot verify current criminal law or BNS/BNSS/BSA provisions.",
-            response="I cannot answer that current-law question from this historical IPC source. Select an appropriate verified source before relying on a current-law answer.",
-        )
-        return result
     if not sources:
         result.update(mode="no_evidence", reason="No matching evidence was found in the selected PDF.", response="No matching passages were found in the selected source. Try a specific provision number or more precise legal keywords.")
         return result
-    reason = "Document excerpts were requested." if answer_mode == "excerpts" else None
+    reason = None
+    if scope_conflict:
+        reason = "The classifier estimate conflicts with an explicit historical-source reference. Showing source excerpts without an AI-generated interpretation."
+    elif answer_mode == "excerpts":
+        reason = "Document excerpts were requested."
+    if reason is None and (classification["status"] != "ready" or "uncertain" in (classification["scope"], classification["intent"])):
+        reason = "Question classification is uncertain or unavailable. Showing source excerpts without an AI-generated interpretation."
     if reason is None and not settings.OPENAI_API_KEY:
         reason = "No AI provider key is configured. Local document retrieval remains available."
     if reason is None:

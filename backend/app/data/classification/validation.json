@@ -1,0 +1,394 @@
+[
+  {
+    "id": "validation-001",
+    "question": "Take me to the book's IPC section 201 passage.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "validation_archive_lookup"
+  },
+  {
+    "id": "validation-002",
+    "question": "Find the old IPC section defining kidnapping.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "validation_archive_lookup"
+  },
+  {
+    "id": "validation-003",
+    "question": "Pull the text of IPC 376 from the archived edition.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "validation_archive_lookup"
+  },
+  {
+    "id": "validation-004",
+    "question": "Where in this historical PDF is section 503?",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "validation_archive_lookup"
+  },
+  {
+    "id": "validation-005",
+    "question": "I only need the former Penal Code section 425 wording.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "validation_archive_lookup"
+  },
+  {
+    "id": "validation-006",
+    "question": "Locate IPC 295A as printed in this historical source.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "validation_archive_lookup"
+  },
+  {
+    "id": "validation-007",
+    "question": "For today's history class, retrieve old IPC section 403.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "validation_archive_lookup"
+  },
+  {
+    "id": "validation-008",
+    "question": "Currently studying the IPC archive; show its section 98 without updating the law.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "validation_archive_lookup"
+  },
+  {
+    "id": "validation-009",
+    "question": "Explain kidnapping according to the old IPC book.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "validation_archive_concepts"
+  },
+  {
+    "id": "validation-010",
+    "question": "What did the historical IPC mean by mischief?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "validation_archive_concepts"
+  },
+  {
+    "id": "validation-011",
+    "question": "Describe the former Penal Code's treatment of forgery.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "validation_archive_concepts"
+  },
+  {
+    "id": "validation-012",
+    "question": "How did the IPC textbook discuss criminal force?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "validation_archive_concepts"
+  },
+  {
+    "id": "validation-013",
+    "question": "I need the old IPC meaning of negligence for a history paper.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "validation_archive_concepts"
+  },
+  {
+    "id": "validation-014",
+    "question": "What did extortion mean in this archived Penal Code?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "validation_archive_concepts"
+  },
+  {
+    "id": "validation-015",
+    "question": "Today I am reading old IPC chapters; explain their definition of assault.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "validation_archive_concepts"
+  },
+  {
+    "id": "validation-016",
+    "question": "For historical research only, explain the IPC exception for infancy.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "validation_archive_concepts"
+  },
+  {
+    "id": "validation-017",
+    "question": "Within the old IPC, compare kidnapping and abduction.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "validation_old_comparisons"
+  },
+  {
+    "id": "validation-018",
+    "question": "Contrast the historical definitions of assault and criminal force.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "validation_old_comparisons"
+  },
+  {
+    "id": "validation-019",
+    "question": "How did IPC 403 and IPC 405 differ in the archived code?",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "validation_old_comparisons"
+  },
+  {
+    "id": "validation-020",
+    "question": "Compare IPC murder and culpable homicide without reference to new law.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "validation_old_comparisons"
+  },
+  {
+    "id": "validation-021",
+    "question": "Which BNS section now covers criminal breach of trust?",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "validation_operative_lookup"
+  },
+  {
+    "id": "validation-022",
+    "question": "Get the operative BNSS provision on summons.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "validation_operative_lookup"
+  },
+  {
+    "id": "validation-023",
+    "question": "Show the BSA section for expert opinions.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "validation_operative_lookup"
+  },
+  {
+    "id": "validation-024",
+    "question": "Find the statute's section applicable to an offence next week.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "validation_operative_lookup"
+  },
+  {
+    "id": "validation-025",
+    "question": "Locate the criminal law provision in force on 1 August 2026.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "validation_operative_lookup"
+  },
+  {
+    "id": "validation-026",
+    "question": "Which present-day section covers mob lynching?",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "validation_operative_lookup"
+  },
+  {
+    "id": "validation-027",
+    "question": "Show the new criminal code clause relating to abduction.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "validation_operative_lookup"
+  },
+  {
+    "id": "validation-028",
+    "question": "I need the latest amended provision on witness protection.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "validation_operative_lookup"
+  },
+  {
+    "id": "validation-029",
+    "question": "What law governs a robbery committed this morning?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "validation_operative_concepts"
+  },
+  {
+    "id": "validation-030",
+    "question": "Explain the present criminal process for recording a statement.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "validation_operative_concepts"
+  },
+  {
+    "id": "validation-031",
+    "question": "How does BNS deal with abetment?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "validation_operative_concepts"
+  },
+  {
+    "id": "validation-032",
+    "question": "What does BNSS require for a search?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "validation_operative_concepts"
+  },
+  {
+    "id": "validation-033",
+    "question": "Explain the treatment of confessions under BSA.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "validation_operative_concepts"
+  },
+  {
+    "id": "validation-034",
+    "question": "What is the applicable criminal statute for events in September 2025?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "validation_operative_concepts"
+  },
+  {
+    "id": "validation-035",
+    "question": "Describe the newest amendments affecting criminal trials.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "validation_operative_concepts"
+  },
+  {
+    "id": "validation-036",
+    "question": "Can the law now in operation impose community service?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "validation_operative_concepts"
+  },
+  {
+    "id": "validation-037",
+    "question": "Compare the current rules for electronic and paper evidence.",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "validation_new_comparisons"
+  },
+  {
+    "id": "validation-038",
+    "question": "How do BNS theft and extortion differ?",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "validation_new_comparisons"
+  },
+  {
+    "id": "validation-039",
+    "question": "Contrast summons and warrants in the BNSS framework.",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "validation_new_comparisons"
+  },
+  {
+    "id": "validation-040",
+    "question": "Compare BSA rules for oral and documentary proof.",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "validation_new_comparisons"
+  },
+  {
+    "id": "validation-041",
+    "question": "What changed in kidnapping provisions from IPC to BNS?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "validation_transition"
+  },
+  {
+    "id": "validation-042",
+    "question": "Match the former IPC fraud sections to their new equivalents.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "validation_transition"
+  },
+  {
+    "id": "validation-043",
+    "question": "Contrast the old and new law on criminal breach of trust.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "validation_transition"
+  },
+  {
+    "id": "validation-044",
+    "question": "How does BNSS police custody differ from CrPC custody?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "validation_transition"
+  },
+  {
+    "id": "validation-045",
+    "question": "Compare historical IPC penalties with those applicable in 2026.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "validation_transition"
+  },
+  {
+    "id": "validation-046",
+    "question": "What is the present successor section to old IPC 506?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "validation_transition"
+  },
+  {
+    "id": "validation-047",
+    "question": "Explain changes between the Evidence Act and Bharatiya Sakshya Adhiniyam.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "validation_transition"
+  },
+  {
+    "id": "validation-048",
+    "question": "Compare the prior criminal law regime and its replacement after July 2024.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "validation_transition"
+  },
+  {
+    "id": "validation-049",
+    "question": "Give directions to the nearest railway station.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "validation_non_research"
+  },
+  {
+    "id": "validation-050",
+    "question": "Write a song about a rainy day.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "validation_non_research"
+  },
+  {
+    "id": "validation-051",
+    "question": "How do volcanoes form?",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "validation_non_research"
+  },
+  {
+    "id": "validation-052",
+    "question": "Find cheap flights for next month.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "validation_non_research"
+  },
+  {
+    "id": "validation-053",
+    "question": "How many calories are in an apple?",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "validation_non_research"
+  },
+  {
+    "id": "validation-054",
+    "question": "Help me install a printer driver.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "validation_non_research"
+  },
+  {
+    "id": "validation-055",
+    "question": "Compare today's tablet models.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "validation_non_research"
+  },
+  {
+    "id": "validation-056",
+    "question": "Find section 304 in this furniture assembly booklet.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "validation_non_research"
+  }
+]

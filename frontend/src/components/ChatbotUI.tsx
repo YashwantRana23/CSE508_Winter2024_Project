@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { chat, getErrorMessage, isCancelled } from "@/lib/api";
-import { downloadResearchBrief } from "@/lib/research-brief";
+import { describeQuestionUnderstanding, downloadResearchBrief } from "@/lib/research-brief";
 import { SourceCard } from "@/components/SourceCard";
-import type { AnswerMode, ChatResponse, HistoryMessage, RetrievalMethod, Source } from "@/types";
+import type { AnswerMode, ChatResponse, HistoryMessage, QuestionClassification, RetrievalMethod, Source } from "@/types";
 
 interface Message extends HistoryMessage {
   result?: ChatResponse;
@@ -81,6 +81,8 @@ export function ChatbotUI({ domain, domainLabel, method, available, selectedSour
       domain: domainLabel,
       mode: modeLabel[latest.result.mode],
       retrievalMethod: latest.result.retrieval.method,
+      retrievalWarning: latest.result.retrieval.warning,
+      classification: latest.result.classification,
       response: latest.content,
       reason: latest.result.reason,
       sources: latest.result.sources,
@@ -108,13 +110,14 @@ export function ChatbotUI({ domain, domainLabel, method, available, selectedSour
           <article key={index} className={`chat-message ${message.role}`}>
             <div className="message-heading"><span>{message.role === "user" ? "You" : "Legal Lens"}</span>{message.result && <span className={`badge ${message.result.mode === "generated" ? "teal" : "amber"}`}>{modeLabel[message.result.mode]}</span>}</div>
             <p className="message-content">{message.content}</p>
+            {message.result?.classification && <QuestionUnderstanding classification={message.result.classification} />}
             {message.result?.reason && <p className="mode-note">{message.result.reason}</p>}
             {message.result?.retrieval.warning && <p className="mode-note">{message.result.retrieval.warning}</p>}
             {!!message.result?.sources.length && <details className="answer-sources"><summary>Inspect {message.result.sources.length} source passages</summary><div className="source-list">{message.result.sources.map((source) => <SourceCard key={source.id} source={source} compact selected={source.id === selectedSource?.id} onSelect={onSelect} />)}</div></details>}
-            {message.result && <p className="fineprint">{message.result.retrieval.method === "hybrid" ? "Hybrid retrieval" : "Keyword retrieval"} · {Math.round(message.result.retrieval.elapsed_ms)} ms retrieval</p>}
+            {message.result && <p className="fineprint">{message.result.retrieval.warning?.startsWith("Retrieval skipped:") ? "Retrieval skipped" : `${message.result.retrieval.method === "hybrid" ? "Hybrid retrieval" : "Keyword retrieval"} · ${Math.round(message.result.retrieval.elapsed_ms)} ms retrieval`}</p>}
           </article>
         ))}
-        {loading && <div className="loading-state" role="status"><span className="loading-dot" />{method === "hybrid" ? "Finding source evidence. The first hybrid request may take longer…" : "Finding source evidence…"}</div>}
+        {loading && <div className="loading-state" role="status"><span className="loading-dot" />Understanding your question, then finding evidence. Local models may take longer to load on the first request…</div>}
       </div>
 
       <form className="chat-compose" onSubmit={(event) => { event.preventDefault(); void send(input.trim()); }}>
@@ -126,5 +129,21 @@ export function ChatbotUI({ domain, domainLabel, method, available, selectedSour
       {notice && <p role="status" className="helper-text">{notice}</p>}
       {latest?.result && <div className="brief-action"><div><strong>Keep the evidence.</strong><p>Download the latest answer, its question, scope, and source passages.</p></div><button type="button" className="button secondary" onClick={exportLatest}>Download brief ↓</button></div>}
     </section>
+  );
+}
+
+
+function QuestionUnderstanding({ classification }: { classification: QuestionClassification }) {
+  const understanding = describeQuestionUnderstanding(classification);
+  const uncertain = classification.status === "unavailable" || classification.scope === "uncertain" || classification.intent === "uncertain";
+  return (
+    <details className="question-understanding">
+      <summary>Question understanding <span className={`badge ${uncertain ? "amber" : "neutral"}`}>{classification.status === "unavailable" ? "Unavailable" : `${understanding.scope} · ${understanding.intent}`}</span></summary>
+      <div className="question-understanding-body">
+        <dl><div><dt>Scope</dt><dd>{understanding.scope}</dd></div><div><dt>Intent</dt><dd>{understanding.intent}</dd></div></dl>
+        {classification.note && <p className={uncertain ? "mode-note" : "helper-text"}>{classification.note}</p>}
+        <p className="fineprint">Local classifier · no API call for this step. This estimate is not a legal determination.{classification.model_version && ` Model: ${classification.model_version}.`}</p>
+      </div>
+    </details>
   );
 }

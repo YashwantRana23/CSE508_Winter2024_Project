@@ -1,14 +1,33 @@
 import { sourceUrl } from "@/lib/api";
-import type { Source } from "@/types";
+import type { QuestionClassification, Source } from "@/types";
 
 interface Brief {
   question: string;
   domain: string;
   mode: string;
   retrievalMethod: string;
+  retrievalWarning?: string | null;
+  classification?: QuestionClassification | null;
   response?: string;
   reason?: string | null;
   sources: Source[];
+}
+
+export function describeQuestionUnderstanding(classification: QuestionClassification) {
+  const scopeLabels = {
+    historical: "Historical law",
+    current: "Current law",
+    comparison: "Cross-era comparison",
+    uncertain: "Uncertain scope",
+  };
+  const intentLabels = {
+    section_lookup: "Section lookup",
+    explanation: "Explanation",
+    comparison: "Comparison",
+    unrelated: "Unrelated question",
+    uncertain: "Uncertain intent",
+  };
+  return { scope: scopeLabels[classification.scope], intent: intentLabels[classification.intent] };
 }
 
 function plainMarkdown(value: string): string {
@@ -23,7 +42,9 @@ export function downloadResearchBrief(brief: Brief) {
     `Created: ${time.toISOString()}`,
     `Corpus: ${plainMarkdown(brief.domain)}`,
     `Output mode: ${plainMarkdown(brief.mode)}`,
-    `Retrieval: ${plainMarkdown(brief.retrievalMethod)}`,
+    brief.retrievalWarning?.startsWith("Retrieval skipped:")
+      ? `Retrieval: skipped (requested method: ${plainMarkdown(brief.retrievalMethod)})`
+      : `Retrieval: ${plainMarkdown(brief.retrievalMethod)}`,
     "",
     "## Scope",
     "Research demo using a bundled historical legal corpus. Coverage is incomplete and is not verified as current law. Check the original source and applicable law before relying on any passage. This brief is not legal advice.",
@@ -32,6 +53,20 @@ export function downloadResearchBrief(brief: Brief) {
     plainMarkdown(brief.question),
     "",
   ];
+  if (brief.classification) {
+    const understanding = describeQuestionUnderstanding(brief.classification);
+    lines.push(
+      "## Question understanding",
+      "Local classifier; no API call is used for this step. Classification is an estimate, not a legal determination.",
+      `Status: ${brief.classification.status === "ready" ? "Ready" : "Unavailable"}`,
+      `Scope: ${understanding.scope}`,
+      `Intent: ${understanding.intent}`,
+    );
+    if (brief.classification.model_version) lines.push(`Model version: ${plainMarkdown(brief.classification.model_version)}`);
+    if (brief.classification.note) lines.push(`Note: ${plainMarkdown(brief.classification.note)}`);
+    lines.push("");
+  }
+  if (brief.retrievalWarning) lines.push("Retrieval note: " + plainMarkdown(brief.retrievalWarning), "");
   if (brief.response) lines.push("## Result", plainMarkdown(brief.response), "");
   if (brief.reason) lines.push("Mode note: " + plainMarkdown(brief.reason), "");
   lines.push("## Source evidence", "");

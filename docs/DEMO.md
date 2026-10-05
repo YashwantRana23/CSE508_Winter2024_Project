@@ -19,6 +19,12 @@ Use the bundled IPC corpus and describe it as **historical research material**. 
 
 If hybrid search reports BM25 fallback, explain the missing/failed local model using the displayed warning. Do not call a lexical-only response hybrid. If a configured domain has no PDF, show its unavailable state rather than selecting another source silently.
 
+## Optional classifier demonstration
+
+In the assistant, ask “Today I am studying the old IPC. Explain Section 302.” Open **Question understanding** to inspect the local scope/intent estimate. Then ask “How does IPC Section 302 compare with BNS?” and show the source-scope refusal with retrieval marked skipped. Try an unclear question to show `uncertain`. The labels use the cached MiniLM encoder and local logistic-regression heads, without API credits. Export a brief to retain the classification note alongside the evidence.
+
+The classifier's small authored evaluation is distinct from retrieval or legal-answer accuracy. See [classifier details](CLASSIFICATION.md) before citing any metric.
+
 ## Lightweight evidence to record
 
 This is a manual demo checklist, not a regression suite. Fill it using actual observations; a blank row means unverified.

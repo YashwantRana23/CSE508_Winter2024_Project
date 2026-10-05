@@ -1,0 +1,394 @@
+[
+  {
+    "id": "test-001",
+    "question": "Please retrieve the archived IPC's section 76 wording.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "test_archive_locator"
+  },
+  {
+    "id": "test-002",
+    "question": "At which PDF page does the old IPC discuss section 361?",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "test_archive_locator"
+  },
+  {
+    "id": "test-003",
+    "question": "Bring up historical Penal Code section 384.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "test_archive_locator"
+  },
+  {
+    "id": "test-004",
+    "question": "I need a source passage containing the former IPC provision 468.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "test_archive_locator"
+  },
+  {
+    "id": "test-005",
+    "question": "Look up the IPC's section 339 in this old volume.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "test_archive_locator"
+  },
+  {
+    "id": "test-006",
+    "question": "Show the historical wording under IPC section 191.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "test_archive_locator"
+  },
+  {
+    "id": "test-007",
+    "question": "I'm practising today; locate section 352 in the old IPC book only.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "test_archive_locator"
+  },
+  {
+    "id": "test-008",
+    "question": "For an archive presentation next year, find the historical IPC 406 text.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "test_archive_locator"
+  },
+  {
+    "id": "test-009",
+    "question": "What did giving false evidence mean in the historical Penal Code?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "test_archive_reasoning"
+  },
+  {
+    "id": "test-010",
+    "question": "Explain the old IPC discussion of receiving stolen property.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "test_archive_reasoning"
+  },
+  {
+    "id": "test-011",
+    "question": "Describe accidental acts according to the former IPC's exceptions.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "test_archive_reasoning"
+  },
+  {
+    "id": "test-012",
+    "question": "How did the archived IPC define a public servant?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "test_archive_reasoning"
+  },
+  {
+    "id": "test-013",
+    "question": "I need an explanation of historical IPC provisions on rash conduct.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "test_archive_reasoning"
+  },
+  {
+    "id": "test-014",
+    "question": "What does this old legal textbook say about counterfeiting?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "test_archive_reasoning"
+  },
+  {
+    "id": "test-015",
+    "question": "I study today but want only a historical IPC explanation of trespass.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "test_archive_reasoning"
+  },
+  {
+    "id": "test-016",
+    "question": "Explain the old IPC's good-faith concept for an essay about nineteenth-century law.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "test_archive_reasoning"
+  },
+  {
+    "id": "test-017",
+    "question": "Compare IPC restraint with IPC confinement in their historical form.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "test_archive_contrasts"
+  },
+  {
+    "id": "test-018",
+    "question": "How did sections 191 and 192 differ within the old Penal Code?",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "test_archive_contrasts"
+  },
+  {
+    "id": "test-019",
+    "question": "Contrast old IPC extortion and robbery without discussing newer legislation.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "test_archive_contrasts"
+  },
+  {
+    "id": "test-020",
+    "question": "Compare IPC forgery and use of a forged document in the historical text.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "test_archive_contrasts"
+  },
+  {
+    "id": "test-021",
+    "question": "Retrieve the present BNS clause for receiving stolen goods.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "test_applicable_locator"
+  },
+  {
+    "id": "test-022",
+    "question": "Where is the BNSS provision for conducting an inquest?",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "test_applicable_locator"
+  },
+  {
+    "id": "test-023",
+    "question": "Find the BSA text on the burden of proof.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "test_applicable_locator"
+  },
+  {
+    "id": "test-024",
+    "question": "Which provision covers an alleged assault occurring in December 2026?",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "test_applicable_locator"
+  },
+  {
+    "id": "test-025",
+    "question": "Show the section currently governing a magistrate's powers.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "test_applicable_locator"
+  },
+  {
+    "id": "test-026",
+    "question": "What section in the operative criminal code covers forgery?",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "test_applicable_locator"
+  },
+  {
+    "id": "test-027",
+    "question": "I need the version of the remand provision applicable this year.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "test_applicable_locator"
+  },
+  {
+    "id": "test-028",
+    "question": "Locate the amended criminal-law clause for a case arising after 2024.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "test_applicable_locator"
+  },
+  {
+    "id": "test-029",
+    "question": "For conduct taking place next month, which criminal law framework applies?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "test_applicable_reasoning"
+  },
+  {
+    "id": "test-030",
+    "question": "Explain witness examination under the law operating in 2026.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "test_applicable_reasoning"
+  },
+  {
+    "id": "test-031",
+    "question": "What does the Bharatiya Nyaya Sanhita say about unlawful assembly?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "test_applicable_reasoning"
+  },
+  {
+    "id": "test-032",
+    "question": "How do investigators use electronic proceedings under BNSS?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "test_applicable_reasoning"
+  },
+  {
+    "id": "test-033",
+    "question": "Describe the presently applicable law on stolen property.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "test_applicable_reasoning"
+  },
+  {
+    "id": "test-034",
+    "question": "What evidence rules govern a criminal trial starting this week?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "test_applicable_reasoning"
+  },
+  {
+    "id": "test-035",
+    "question": "Explain the latest criminal code's treatment of public servants.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "test_applicable_reasoning"
+  },
+  {
+    "id": "test-036",
+    "question": "What is the legal position on false evidence under BSA?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "test_applicable_reasoning"
+  },
+  {
+    "id": "test-037",
+    "question": "Compare direct and circumstantial evidence under today's statutory framework.",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "test_operative_contrasts"
+  },
+  {
+    "id": "test-038",
+    "question": "Contrast BNS provisions for forgery and counterfeiting.",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "test_operative_contrasts"
+  },
+  {
+    "id": "test-039",
+    "question": "How do inquiry and trial differ in the BNSS?",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "test_operative_contrasts"
+  },
+  {
+    "id": "test-040",
+    "question": "Compare current punishments for theft and robbery.",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "test_operative_contrasts"
+  },
+  {
+    "id": "test-041",
+    "question": "How were the former IPC provisions on false evidence carried into the BNS?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "test_era_transition"
+  },
+  {
+    "id": "test-042",
+    "question": "Compare rules about electronic evidence before and after the BSA replaced the old act.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "test_era_transition"
+  },
+  {
+    "id": "test-043",
+    "question": "Map the historical IPC criminal trespass offence onto the replacement code.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "test_era_transition"
+  },
+  {
+    "id": "test-044",
+    "question": "What changed in abetment from the former Penal Code to the present one?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "test_era_transition"
+  },
+  {
+    "id": "test-045",
+    "question": "Contrast criminal procedure in 2022 with procedure after BNSS commencement.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "test_era_transition"
+  },
+  {
+    "id": "test-046",
+    "question": "Which new provision corresponds to IPC section 411?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "test_era_transition"
+  },
+  {
+    "id": "test-047",
+    "question": "Explain the differences between old IPC unlawful assembly and its BNS counterpart.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "test_era_transition"
+  },
+  {
+    "id": "test-048",
+    "question": "Show how current treatment of forgery differs from the historical Indian Penal Code.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "test_era_transition"
+  },
+  {
+    "id": "test-049",
+    "question": "Design a logo for a coffee shop.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "test_off_topic"
+  },
+  {
+    "id": "test-050",
+    "question": "Explain how a refrigerator works.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "test_off_topic"
+  },
+  {
+    "id": "test-051",
+    "question": "When does the next train to Delhi leave?",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "test_off_topic"
+  },
+  {
+    "id": "test-052",
+    "question": "Suggest a playlist for running.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "test_off_topic"
+  },
+  {
+    "id": "test-053",
+    "question": "Convert ten kilometres into miles.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "test_off_topic"
+  },
+  {
+    "id": "test-054",
+    "question": "Compare two electric cars released this year.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "test_off_topic"
+  },
+  {
+    "id": "test-055",
+    "question": "What does chapter 302 of this fantasy novel describe?",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "test_off_topic"
+  },
+  {
+    "id": "test-056",
+    "question": "Give the latest score from the tennis final.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "test_off_topic"
+  }
+]

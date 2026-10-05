@@ -1,0 +1,1150 @@
+[
+  {
+    "id": "train-001",
+    "question": "Find Section 302 of the Indian Penal Code.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-002",
+    "question": "Show the old IPC text of section 420.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-003",
+    "question": "Where is IPC section 304B in this historical book?",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-004",
+    "question": "I need the wording of Section 34 in the former Penal Code.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-005",
+    "question": "Locate the IPC provision numbered 120B.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-006",
+    "question": "Give me the passage for section 375 from the old IPC source.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-007",
+    "question": "Pull up IPC s. 499 as it appeared in the historical material.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-008",
+    "question": "Which PDF page contains section 300 of the IPC?",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-009",
+    "question": "Find the archived text of Indian Penal Code section 124A.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-010",
+    "question": "Show section 96 from this IPC edition.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-011",
+    "question": "Retrieve the historical IPC section 511 passage.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-012",
+    "question": "I am looking for the old penal code's section 378.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-013",
+    "question": "Section 141 in the historical IPC book, please.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-014",
+    "question": "Take me to IPC section 149 in the supplied archive.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-015",
+    "question": "Display the wording of section 53 in the old Indian Penal Code.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-016",
+    "question": "Where can I read the archived IPC provision 307?",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-017",
+    "question": "Bring up Section 354 from the bundled historical IPC.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-018",
+    "question": "Locate IPC 323 in this source PDF.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-019",
+    "question": "I need to quote old IPC section 299 exactly.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-020",
+    "question": "Find IPC section 415 as recorded in this textbook.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-021",
+    "question": "Show me the original text for section 441 of the IPC.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-022",
+    "question": "Today I am studying the historical IPC: please locate Section 302.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-023",
+    "question": "For my presentation tomorrow, open the old IPC's Section 97.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-024",
+    "question": "Only from this historical edition, retrieve section 109; not the current replacement.",
+    "scope": "historical",
+    "intent": "section_lookup",
+    "family": "explicit_old_provisions"
+  },
+  {
+    "id": "train-025",
+    "question": "Explain murder under the historical Indian Penal Code.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-026",
+    "question": "What did the IPC mean by criminal conspiracy?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-027",
+    "question": "How was private defence described in the old IPC?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-028",
+    "question": "Describe theft using only this archived penal code book.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-029",
+    "question": "Explain common intention in the historical IPC.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-030",
+    "question": "What counted as abetment under the former Indian Penal Code?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-031",
+    "question": "How did the old code define dishonest intention?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-032",
+    "question": "Summarize the IPC discussion of culpable homicide.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-033",
+    "question": "What does this historical IPC source say about grievous hurt?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-034",
+    "question": "Explain unlawful assembly in the bundled old-law textbook.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-035",
+    "question": "What did wrongful confinement mean under the IPC?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-036",
+    "question": "Describe defamation according to the former Indian Penal Code.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-037",
+    "question": "How did historical IPC provisions treat attempted offences?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-038",
+    "question": "Explain criminal trespass from this old IPC material.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-039",
+    "question": "What were the elements of cheating in the IPC?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-040",
+    "question": "Using only the historical book, explain the insanity exception.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-041",
+    "question": "Explain the IPC's old distinction between intention and knowledge.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-042",
+    "question": "What does the archived IPC say about consent?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-043",
+    "question": "Describe public nuisance as discussed in the old penal code.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-044",
+    "question": "How did the old IPC address a mistake of fact?",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-045",
+    "question": "Explain the historical IPC punishment categories.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-046",
+    "question": "I am revising today, but only want the old IPC definition of theft.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-047",
+    "question": "Currently writing a history essay: explain abetment under the old IPC alone.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-048",
+    "question": "Ignore modern replacements for this question and explain the IPC's historical treatment of intimidation.",
+    "scope": "historical",
+    "intent": "explanation",
+    "family": "old_concepts"
+  },
+  {
+    "id": "train-049",
+    "question": "Compare sections 299 and 300 within the historical IPC.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-050",
+    "question": "What was the difference between theft and robbery under the old IPC?",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-051",
+    "question": "Contrast IPC sections 302 and 304 as historical provisions.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-052",
+    "question": "Compare common intention and common object in the IPC archive.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-053",
+    "question": "How did old IPC cheating differ from criminal breach of trust?",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-054",
+    "question": "Compare the historical IPC definitions of hurt and grievous hurt.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-055",
+    "question": "What distinguished wrongful restraint from confinement under the former IPC?",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-056",
+    "question": "Contrast abetment and conspiracy using this old IPC book only.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-057",
+    "question": "Compare theft with criminal misappropriation in the historical Penal Code.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-058",
+    "question": "How were preparation and attempt distinguished in the IPC textbook?",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-059",
+    "question": "Compare IPC section 34 with section 149; stay within this historical source.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-060",
+    "question": "Today my history assignment compares the old IPC's robbery and dacoity definitions.",
+    "scope": "historical",
+    "intent": "comparison",
+    "family": "within_old_code"
+  },
+  {
+    "id": "train-061",
+    "question": "Find section 103 of the Bharatiya Nyaya Sanhita.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-062",
+    "question": "Show the currently applicable provision for murder.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-063",
+    "question": "Which BNS section deals with theft?",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-064",
+    "question": "Retrieve BNSS section 173.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-065",
+    "question": "Give the wording of BSA section 63.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-066",
+    "question": "Locate the latest criminal-law provision about cheating.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-067",
+    "question": "Show the new code's provision for criminal intimidation.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-068",
+    "question": "What is the section for robbery in the law in force now?",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-069",
+    "question": "Find BNS section 69 in an official current source.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-070",
+    "question": "Where is the presently operative bail provision?",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-071",
+    "question": "Open the relevant section of the Bharatiya Sakshya Adhiniyam.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-072",
+    "question": "Retrieve the current Bharatiya Nagarik Suraksha Sanhita text on arrest.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-073",
+    "question": "Find the statutory section governing an offence committed this year.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-074",
+    "question": "Show the provision in force for an incident in 2026.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-075",
+    "question": "Which new criminal code section governs dacoity?",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-076",
+    "question": "I need the updated section number for hurt under today's law.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-077",
+    "question": "Find the latest amended definition of electronic evidence.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-078",
+    "question": "Show section 109 from the BNS rather than the IPC.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-079",
+    "question": "Locate the current penalty provision for cyber fraud.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-080",
+    "question": "Bring up the law's operative section on stalking in 2025.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-081",
+    "question": "What provision should be cited for theft occurring after July 2024?",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-082",
+    "question": "Find the rule presently governing police remand.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-083",
+    "question": "Read out the current statutory clause about FIR registration.",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-084",
+    "question": "Which operative BNS clause covers organized crime?",
+    "scope": "current",
+    "intent": "section_lookup",
+    "family": "new_provisions"
+  },
+  {
+    "id": "train-085",
+    "question": "Explain the criminal law currently in force in India.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-086",
+    "question": "What are the latest rules about arrest?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-087",
+    "question": "How does the BNS define murder?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-088",
+    "question": "Explain bail procedure under the BNSS.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-089",
+    "question": "How is digital evidence treated by the BSA?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-090",
+    "question": "What law applies to a crime committed in 2026?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-091",
+    "question": "What are the rules on cheating as of today?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-092",
+    "question": "Explain the new criminal law approach to community service.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-093",
+    "question": "Has the law on sedition changed under the current framework?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-094",
+    "question": "What should a complaint filed this year cite?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-095",
+    "question": "Describe the law governing offences after July 2024.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-096",
+    "question": "Explain Bharatiya Nyaya Sanhita provisions about organized crime.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-097",
+    "question": "What is the applicable punishment for theft now?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-098",
+    "question": "How do I research the law operative on 5 October 2026?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-099",
+    "question": "Explain the most recent amendments to criminal procedure.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-100",
+    "question": "What protections exist under the law in force at present?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-101",
+    "question": "Tell me the latest legal position on electronic records.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-102",
+    "question": "Does the new criminal code criminalize this conduct?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-103",
+    "question": "Explain the rules that a court would apply to an incident last month.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-104",
+    "question": "Is the IPC still the applicable statute for a new offence?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-105",
+    "question": "What criminal provisions apply to conduct occurring tomorrow?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-106",
+    "question": "I want the updated law, not the historical IPC explanation.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-107",
+    "question": "What does the Bharatiya Sakshya Adhiniyam say about admissibility?",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-108",
+    "question": "Explain procedural duties under the presently operative criminal code.",
+    "scope": "current",
+    "intent": "explanation",
+    "family": "operative_law"
+  },
+  {
+    "id": "train-109",
+    "question": "Compare murder and culpable homicide under the BNS.",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "within_new_code"
+  },
+  {
+    "id": "train-110",
+    "question": "How do BNS sections 103 and 105 differ?",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "within_new_code"
+  },
+  {
+    "id": "train-111",
+    "question": "Compare bail and anticipatory bail under current criminal procedure.",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "within_new_code"
+  },
+  {
+    "id": "train-112",
+    "question": "Contrast theft and snatching in the new criminal law.",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "within_new_code"
+  },
+  {
+    "id": "train-113",
+    "question": "What is the difference between cognizable and non-cognizable cases under today's rules?",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "within_new_code"
+  },
+  {
+    "id": "train-114",
+    "question": "Compare two provisions of the Bharatiya Sakshya Adhiniyam.",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "within_new_code"
+  },
+  {
+    "id": "train-115",
+    "question": "Compare arrest and detention under the BNSS.",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "within_new_code"
+  },
+  {
+    "id": "train-116",
+    "question": "How do community service and imprisonment differ under current law?",
+    "scope": "current",
+    "intent": "comparison",
+    "family": "within_new_code"
+  },
+  {
+    "id": "train-117",
+    "question": "Compare the IPC with the BNS.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-118",
+    "question": "How did Section 302 change under the new criminal code?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-119",
+    "question": "Map the old IPC murder provision to its current replacement.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-120",
+    "question": "What changed between historical IPC theft and BNS theft?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-121",
+    "question": "Compare pre-2024 criminal procedure with the BNSS.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-122",
+    "question": "How does the old Evidence Act differ from the BSA?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-123",
+    "question": "Show the transition from Indian Penal Code to Bharatiya Nyaya Sanhita.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-124",
+    "question": "What is the successor to IPC section 420 under today's law?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-125",
+    "question": "Contrast the old and new criminal law definitions of sedition.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-126",
+    "question": "Compare the law before and after the July 2024 transition.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-127",
+    "question": "How do former IPC punishments compare with BNS punishments?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-128",
+    "question": "Build a historical-to-current section mapping for robbery.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-129",
+    "question": "Which provisions replaced the IPC's conspiracy sections?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-130",
+    "question": "What changed from the CrPC to the BNSS?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-131",
+    "question": "Compare an IPC rule with its currently operative equivalent.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-132",
+    "question": "How did the new code alter the old definition of rape?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-133",
+    "question": "Trace the change in evidence law from the old statute to the BSA.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-134",
+    "question": "What remains the same and what changed between IPC and BNS?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-135",
+    "question": "Contrast historical defamation law with today's criminal code.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-136",
+    "question": "Compare criminal law in 2023 and 2026.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-137",
+    "question": "Which old IPC sections were renumbered in the new law?",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-138",
+    "question": "Explain how the former penal code and its replacement treat organized crime.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-139",
+    "question": "Map old criminal intimidation provisions to the newer statute.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-140",
+    "question": "I need a side-by-side historical IPC and current BNS comparison.",
+    "scope": "comparison",
+    "intent": "comparison",
+    "family": "cross_era"
+  },
+  {
+    "id": "train-141",
+    "question": "What is the weather today?",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-142",
+    "question": "Write a birthday poem for my friend.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-143",
+    "question": "Give me a recipe for chocolate cake.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-144",
+    "question": "Tell me a joke about cats.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-145",
+    "question": "How do I learn guitar chords?",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-146",
+    "question": "Translate good morning into Spanish.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-147",
+    "question": "Plan a holiday in the mountains.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-148",
+    "question": "What is the capital of France?",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-149",
+    "question": "Solve this quadratic equation.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-150",
+    "question": "Create a workout routine for beginners.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-151",
+    "question": "Who won the football game last night?",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-152",
+    "question": "Recommend a movie for the weekend.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-153",
+    "question": "Explain photosynthesis to a child.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-154",
+    "question": "Help me choose a laptop.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-155",
+    "question": "Write a Python function to sort numbers.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-156",
+    "question": "How do I change a bicycle tyre?",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-157",
+    "question": "Summarize the plot of a science fiction film.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-158",
+    "question": "Find the best pizza nearby.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-159",
+    "question": "Give me tips for growing tomatoes.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-160",
+    "question": "Compose an email inviting friends to dinner.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-161",
+    "question": "Compare two mobile phones for gaming.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-162",
+    "question": "What is the newest cricket score?",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-163",
+    "question": "Explain section 302 of my computer manual, not any law.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  },
+  {
+    "id": "train-164",
+    "question": "I want the current exchange rate for euros.",
+    "scope": null,
+    "intent": "unrelated",
+    "family": "non_research"
+  }
+]

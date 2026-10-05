@@ -16,12 +16,17 @@ Each PR builds on the previous branch so review diffs stay focused. Merge in ord
 
 The feature contracts live in the Pydantic schemas and OpenAPI `/docs`. PR descriptions should record the checks actually executed on the corresponding branch. Container build/run and successful paid generation must stay listed as unverified if the environment did not permit them.
 
+## Local classifier follow-up
+
+The original feature stack was integrated into `main` through [PR #8](https://github.com/YashwantRana23/CSE508_Winter2024_Project/pull/8). The `legal-lens/local-question-classifier` branch adds a separate feature PR on top of that release: frozen MiniLM embeddings, logistic scope/intent heads, abstention, source-policy integration, and visible/exported question understanding. See [classification design and evidence](CLASSIFICATION.md). It requires the existing cached encoder, not a hosted model key.
+
 ## Included implementation scope
 
 - Shared PDF-based retrieval for search and chat, with page-aware excerpts and registered source links.
 - BM25 lexical baseline; optional locally cached MiniLM semantic path and RRF fusion.
 - A keyless excerpt experience, explicit provider failures, and a bounded provider retry cooldown.
 - Source-backed research UI and Markdown brief export.
+- Local question classification with explicit uncertainty and a reviewable authored dataset.
 - Persistent local feedback/cache storage, reproducible setup instructions, and build-only CI.
 
 ## Deferred from the larger roadmap
