@@ -1,0 +1,29 @@
+# Only application source and the bundled research PDF enter the build context.
+**
+!backend/
+!backend/app/
+!backend/app/**
+!backend/requirements-lock.txt
+!backend/Dockerfile
+!frontend/
+!frontend/src/
+!frontend/src/**
+!frontend/public/
+!frontend/public/**
+!frontend/package.json
+!frontend/package-lock.json
+!frontend/next.config.ts
+!frontend/tsconfig.json
+!frontend/postcss.config.mjs
+!frontend/eslint.config.mjs
+!frontend/next-env.d.ts
+!frontend/Dockerfile
+!LegalLaw/
+!LegalLaw/Chatbot/
+!LegalLaw/Chatbot/Indian Penal Code Book.pdf
+# Defense in depth if an allowed source directory gains local files.
+**/.env
+**/.env.*
+**/*.log
+**/__pycache__/**
+**/*.pyc

@@ -2,20 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Legal Lens",
-  description: "Legal search, knowledge graph & domain-specific legal assistant",
+  title: "Legal Lens 2.0 — Research with provenance",
+  description: "Explore a historical legal corpus with hybrid search, grounded answers, page-linked evidence, and downloadable research briefs.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">
-        {children}
-      </body>
-    </html>
-  );
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="en"><body>{children}</body></html>;
 }
